@@ -6,1127 +6,719 @@
   <title>Ristorante Belvedere — Hofstetten</title>
 
   <style>
-    /* TU CSS (lo que ya tenías) */
+    /* ================================================= */
+    /* 1. PALETA DE COLORES (Dark/Light Mode) */
+    /* ================================================= */
+
+    :root{
+      --bg: #111111;
+      --card: #1a1a1a;
+      --muted: #aaaaaa;
+      --text: #ffffff;
+      --accent: #d4af37;
+      --ring: #333333;
+      --max:1200px;
+      --radius:14px;
+      --shadow:0 8px 24px rgba(0,0,0,.5);
+    }
+
+    [data-theme="light"] {
+      --bg: #f5f5f5;
+      --card: #ffffff;
+      --muted: #666666;
+      --text: #1a1a1a;
+      --accent: #b8860b;
+      --ring: #dddddd;
+      --shadow:0 8px 24px rgba(0,0,0,.15);
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      scroll-behavior:smooth;
+      transition: background 0.3s, color 0.3s;
+    }
+    img{max-width:100%;display:block}
+    a{color:inherit;text-decoration:none}
+
+    .container{max-width:var(--max);margin:0 auto;padding:0 22px}
+    .card{
+      background:var(--card);
+      border:1px solid var(--ring);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .btn{
+      display:inline-block;padding:10px 16px;border-radius:10px;border:1px solid var(--ring);
+      background:var(--accent);color:var(--bg);font-weight:600; cursor:pointer; text-align:center;
+      transition:background .2s, color .2s, border-color .2s
+    }
+    .btn:hover { background: color-mix(in srgb, var(--accent) 90%, var(--text)); }
+    .btn.secondary{background:transparent;color:var(--text); border-color: var(--muted); }
+    .btn.secondary:hover{background:var(--ring); border-color: var(--ring);}
+    .btn.secondary.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+    .btn.whatsapp { background: #25D366; color: #fff; border: none; font-weight: 700;}
+    .btn.whatsapp:hover { background: #128C7E; }
+
+    input, select, textarea {
+      background: var(--bg);
+      border: 1px solid var(--ring);
+      color: var(--text);
+      padding: 10px;
+      border-radius: 8px;
+      width: 100%;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    h1,h2,h3,h4{margin:0 0 10px}
+    .subtitle{color:var(--muted);margin:0 0 12px}
+
+    header{
+      position:sticky;top:0;z-index:100;
+      background: color-mix(in srgb, var(--bg) 95%, transparent);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--ring);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    nav{display:flex;align-items:center;height:64px; justify-content: space-between;}
+    nav .brand{font-weight:800;letter-spacing:.3px}
+
+    #site-logo { height: 80px; width: auto; }
+    @media (max-width: 900px) { #site-logo { height: 65px; } }
+
+    nav ul{list-style:none;margin:0;padding:0;display:flex;gap:18px;align-items:center}
+    nav .lang-switch { display:flex; gap: 8px; align-items:center; }
+    nav .lang-switch select{
+      appearance:auto;
+      background:var(--card);
+      color:var(--text);
+      padding:4px 8px;
+      border-radius:8px;
+      font-size:14px;
+      border: 1px solid var(--ring);
+    }
+
+    .theme-toggle {
+      cursor: pointer;
+      font-size: 20px;
+      padding: 4px;
+      border-radius: 6px;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .theme-toggle:hover { color: var(--text); }
+
+    @media (max-width:900px){ nav ul{display:none;} }
+
+    .hero{padding:34px 0 22px; }
+    .hero .banner{
+      height:220px;border-radius:var(--radius);
+      background:url('https://i.imgur.com/h91sjnw.jpg') center/cover no-repeat;
+      opacity:.55; margin-bottom: 20px;
+    }
+
+    #hero-logo {
+      height: 200px;
+      width: auto;
+      margin: 0 0 15px 0;
+      display: block;
+    }
+    .hero-info { text-align:left; }
+
+    @media (max-width: 750px) {
+      #hero-logo { height: 120px; margin: 0 auto 15px auto; }
+      .hero-info { text-align:center; }
+    }
+
+    .text-link { color: var(--accent); font-weight: 600; cursor: pointer; text-decoration: underline; font-size: 15px;}
+    #mini-bio { display:none; padding: 10px 0 22px; transition: opacity 0.4s; text-align:left;}
+    #mini-bio.visible { display:block; opacity:1; }
+
+    .hours .card{padding:18px; margin-bottom: 22px;}
+    .hours-grid{ display:grid; grid-template-columns: 140px 1fr; gap:8px 20px; max-width: 350px; margin: 0 auto; }
+    .hours-grid div:nth-child(even){ text-align:right; color:var(--muted); }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      max-width: 100%;
+      border-radius: 8px;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+
+    .highlight .grid{display:grid;grid-template-columns: 1fr 1fr; gap:24px; margin: 30px 0;}
+    .highlight .card{padding:24px; display:flex; flex-direction:column; justify-content:space-between; min-height: 220px;}
+
+    .menu-bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:20px}
+    .menu-section{display:none; padding: 24px; margin-bottom: 30px;}
+    .dish{display:flex; justify-content: space-between; align-items: flex-start; padding: 14px 0; border-bottom: 1px dashed var(--ring); gap: 15px;}
+    .dish-info{flex: 1;}
+    .dish-name{font-weight: 600; color: var(--text); display: block; font-size: 1.05em;}
+    .dish-desc{font-size: 13.5px; color: var(--muted); line-height: 1.4; margin-top: 2px;}
+    .dish-price{font-weight: 700; color: var(--accent); white-space: nowrap; font-family: monospace; font-size: 1.05em;}
+
+    .car-viewport{position:relative; height:380px; display:flex; justify-content:center; align-items:center; overflow:hidden;}
+    .car-img-wrap { position: absolute; transition: all 0.5s ease-in-out; border: 2px solid var(--ring); overflow: hidden; }
+    .is-center-wrap{ width: 55%; height: 95%; z-index: 5; border-radius: 18px; box-shadow: var(--shadow); position: relative;}
+    .car-left, .car-right{ width: 25%; height: 70%; z-index: 2; filter: blur(3px) brightness(0.6); opacity: 0.6; border-radius: 18px;}
+    .car-left{ left: 5%; transform: scale(0.9); }
+    .car-right{ right: 5%; transform: scale(0.9); }
+    .car-img-wrap img{ width: 100%; height: 100%; object-fit: cover; }
+    .car-dots{display:flex; gap:6px; justify-content:center; margin-top:10px}
+    .car-dot{width:10px; height:10px; border-radius:50%; border:1px solid var(--muted); cursor:pointer; transition: 0.3s;}
+    .car-dot[aria-selected="true"]{background:var(--accent); border-color:var(--accent); transform: scale(1.2);}
+
+    .tour-bar{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin: 14px 0 10px;}
+    .map-iframe-wrapper{
+      width:100%;
+      border:1px solid var(--ring);
+      border-radius:var(--radius);
+      overflow:hidden;
+      background:var(--card);
+      height: 520px;
+    }
+    .map-iframe-wrapper iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+    }
+
+    .res-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .full{ grid-column: 1 / -1; }
+    textarea#rNotes { min-height: 120px; resize: vertical; }
+
+    .contact-grid { display:grid; grid-template-columns: 1fr 1.5fr; gap:30px; }
+    .contact-map-wrapper{
+      width:100%;
+      border-radius:10px;
+      overflow:hidden;
+      border:1px solid var(--ring);
+      background:var(--card);
+      height: 320px;
+    }
+    .contact-map-wrapper iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+    }
+
+    footer { border-top: 1px solid var(--ring); }
+
+    @media (max-width:750px) {
+      .highlight .grid, .res-grid { grid-template-columns: 1fr; }
+      .is-center-wrap { width: 90%; }
+      .car-left, .car-right { display: none; }
+      .hours-grid { grid-template-columns: 1fr 1fr; font-size: 14px;}
+      .contact-grid { grid-template-columns: 1fr; }
+      .map-iframe-wrapper{ height: 420px; }
+    }
   </style>
 </head>
 
 <body data-theme="dark">
- <!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Ristorante Belvedere — Hofstetten</title>
-
-    <style>
-        /* ================================================= */
-        /* 1. PALETA DE COLORES (Dark/Light Mode) */
-        /* ================================================= */
-
-        /* Default: Dark Mode (Gold/Black) */
-        :root{
-            --bg: #111111;              /* Fondo muy oscuro */
-            --card: #1a1a1a;            /* Fondo de tarjetas */
-            --muted: #aaaaaa;           /* Texto secundario */
-            --text: #ffffff;            /* Texto principal (blanco) */
-            --accent: #d4af37;          /* Acento (Dorado/Gold) */
-            --ring: #333333;            /* Bordes/Divisores */
-            --max:1200px;
-            --radius:14px;
-            --shadow:0 8px 24px rgba(0,0,0,.5);
-        }
-
-        /* Light Mode Overrides */
-        [data-theme="light"] {
-            --bg: #f5f5f5;
-            --card: #ffffff;
-            --muted: #666666;
-            --text: #1a1a1a;
-            --accent: #b8860b;         /* Dorado oscuro para mejor contraste */
-            --ring: #dddddd;
-            --shadow:0 8px 24px rgba(0,0,0,.15);
-        }
-
-        /* ================================================= */
-        /* 2. ESTILOS BASE Y COMUNES */
-        /* ================================================= */
-
-        *{box-sizing:border-box}
-        html,body{
-            margin:0;
-            background:var(--bg);
-            color:var(--text);
-            font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
-            scroll-behavior: smooth;
-            transition: background 0.3s, color 0.3s; /* Transición para el tema */
-        }
-        img{max-width:100%;display:block}
-        a{color:inherit;text-decoration:none}
-
-        .container{max-width:var(--max);margin:0 auto;padding:0 22px}
-        .card{
-            background:var(--card);
-            border:1px solid var(--ring);
-            border-radius:var(--radius);
-            box-shadow:var(--shadow);
-            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
-        }
-
-        /* Botones */
-        .btn{display:inline-block;padding:10px 16px;border-radius:10px;border:1px solid var(--ring);background:var(--accent);color:var(--bg);font-weight:600; cursor:pointer; text-align: center; transition:background .2s, color .2s, border-color .2s}
-        .btn:hover { background: color-mix(in srgb, var(--accent) 90%, var(--text)); }
-        .btn.secondary{background:transparent;color:var(--text); border-color: var(--muted); }
-        .btn.secondary:hover{background:var(--ring); border-color: var(--ring);}
-        .btn.secondary.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-
-        .btn.whatsapp { background: #25D366; color: #fff; border: none; font-weight: 700;}
-        .btn.whatsapp:hover { background: #128C7E; }
-
-        /* Inputs y Formularios */
-        input, select, textarea {
-            background: var(--bg);
-            border: 1px solid var(--ring);
-            color: var(--text);
-            padding: 10px;
-            border-radius: 8px;
-            width: 100%;
-            transition: background 0.3s, border-color 0.3s;
-        }
-
-        h1,h2,h3,h4{margin:0 0 10px}
-        .subtitle{color:var(--muted);margin:0 0 12px}
-
-        /* ================================================= */
-        /* 3. NAV & HEADER */
-        /* ================================================= */
-        header{
-            position:sticky;top:0;z-index:100;
-            background: color-mix(in srgb, var(--bg) 95%, transparent); /* Background semitransparente */
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--ring);
-            transition: background 0.3s, border-color 0.3s;
-        }
-        nav{display:flex;align-items:center;height:64px; justify-content: space-between;}
-        nav .brand{font-weight:800;letter-spacing:.3px}
-
-        #site-logo { height: 80px; width: auto; }
-        @media (max-width: 900px) {
-            #site-logo { height: 65px; }
-        }
-
-        nav ul{list-style:none;margin:0;padding:0;display:flex;gap:18px;align-items:center}
-        nav .lang-switch, nav .theme-switch { display: flex; gap: 8px; align-items: center; }
-        nav .lang-switch select{
-            appearance:auto;
-            background:var(--card);
-            color:var(--text);
-            padding:4px 8px;
-            border-radius:8px;
-            font-size: 14px;
-            border: 1px solid var(--ring);
-        }
-
-        /* Botón de tema */
-        .theme-toggle {
-            cursor: pointer;
-            font-size: 20px;
-            padding: 4px;
-            border-radius: 6px;
-            color: var(--muted);
-            transition: color 0.2s;
-        }
-        .theme-toggle:hover {
-            color: var(--text);
-        }
-
-        @media (max-width:900px){ nav ul{display:none;} }
-
-        /* ================================================= */
-        /* 4. HERO SECTION (Modificado para Left Align + Grande) */
-        /* ================================================= */
-        .hero{padding:34px 0 22px; }
-        .hero .banner{ height:220px;border-radius:var(--radius); background:url('https://i.imgur.com/h91sjnw.jpg') center/cover no-repeat; opacity:.55; margin-bottom: 20px;}
-
-        /* LOGO GRANDE EN EL HERO */
-        #hero-logo {
-            height: 200px; /* Tamaño más grande para escritorio */
-            width: auto;
-            margin: 0 0 15px 0; /* Alineado a la izquierda */
-            display: block;
-        }
-
-        .hero-info { /* Wrapper para subtítulo y botón */
-            text-align: left; /* ALINEADO A LA IZQUIERDA (Desktop) */
-        }
-
-        @media (max-width: 750px) {
-            #hero-logo {
-                height: 120px; /* Ajuste para móvil */
-                margin: 0 auto 15px auto; /* Centrado en móvil */
-            }
-            .hero-info {
-                text-align: center; /* Centrado en móvil */
-            }
-        }
-
-        .text-link { color: var(--accent); font-weight: 600; cursor: pointer; text-decoration: underline; font-size: 15px;}
-        #mini-bio { display: none; padding: 10px 0 22px; transition: opacity 0.4s; text-align: left;}
-        #mini-bio.visible { display: block; opacity: 1; }
-
-        /* HORARIOS COMPACTOS */
-        .hours .card{padding:18px; margin-bottom: 22px;}
-        .hours-grid{ display:grid; grid-template-columns: 140px 1fr; gap:8px 20px; max-width: 350px; margin: 0 auto; }
-        .hours-grid div:nth-child(even){ text-align: right; color: var(--muted); }
-
-        /* VIDEO PROMO */
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-            height: 0;
-            overflow: hidden;
-            max-width: 100%;
-            border-radius: 8px;
-        }
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-
-        /* HIGHLIGHTS */
-        .highlight .grid{display:grid;grid-template-columns: 1fr 1fr; gap:24px; margin: 30px 0;}
-        .highlight .card{padding:24px; display:flex; flex-direction:column; justify-content:space-between; min-height: 220px;}
-
-        /* MENÚ */
-        .menu-bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:20px}
-        .menu-section{display:none; padding: 24px; margin-bottom: 30px;}
-        .dish{display:flex; justify-content: space-between; align-items: flex-start; padding: 14px 0; border-bottom: 1px dashed var(--ring); gap: 15px;}
-        .dish-info{flex: 1;}
-        .dish-name{font-weight: 600; color: var(--text); display: block; font-size: 1.05em;}
-        .dish-desc{font-size: 13.5px; color: var(--muted); line-height: 1.4; margin-top: 2px;}
-        .dish-price{font-weight: 700; color: var(--accent); white-space: nowrap; font-family: monospace; font-size: 1.05em;}
-
-        /* GALERÍA */
-        .car-viewport{position:relative; height:380px; display:flex; justify-content:center; align-items:center; overflow:hidden;}
-        .car-img-wrap { position: absolute; transition: all 0.5s ease-in-out; border: 2px solid var(--ring); overflow: hidden; }
-        .is-center-wrap{ width: 55%; height: 95%; z-index: 5; border-radius: 18px; box-shadow: var(--shadow); position: relative;}
-        .car-left, .car-right{ width: 25%; height: 70%; z-index: 2; filter: blur(3px) brightness(0.6); opacity: 0.6; border-radius: 18px;}
-        .car-left{ left: 5%; transform: scale(0.9); }
-        .car-right{ right: 5%; transform: scale(0.9); }
-        .car-img-wrap img{ width: 100%; height: 100%; object-fit: cover; }
-        .car-dots{display:flex; gap:6px; justify-content:center; margin-top:10px}
-        .car-dot{width:10px; height:10px; border-radius:50%; border:1px solid var(--muted); cursor:pointer; transition: 0.3s;}
-        .car-dot[aria-selected="true"]{background:var(--accent); border-color:var(--accent); transform: scale(1.2);}
-
-        /* TOUR 360 - ROBUSTO */
-        .tour-bar{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin: 14px 0 10px;}
-        .map-iframe-wrapper{
-            width:100%;
-            border:1px solid var(--ring);
-            border-radius:var(--radius);
-            overflow:hidden;
-            background:var(--card);
-            height: 520px;
-        }
-        .map-iframe-wrapper iframe{
-            width:100%;
-            height:100%;
-            border:0;
-            display:block;
-        }
-
-        /* FORMULARIO */
-        .res-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .full{ grid-column: 1 / -1; }
-        textarea#rNotes { min-height: 120px; resize: vertical; }
-
-        /* CONTACTO */
-        .contact-grid { display:grid; grid-template-columns: 1fr 1.5fr; gap:30px; }
-        .contact-map-wrapper{
-            width:100%;
-            border-radius:10px;
-            overflow:hidden;
-            border:1px solid var(--ring);
-            background:var(--card);
-            height: 320px; /* AUMENTADO DE 260PX A 320PX */
-        }
-        .contact-map-wrapper iframe{
-            width:100%;
-            height:100%;
-            border:0;
-            display:block;
-        }
-
-        /* FOOTER */
-        footer {
-            border-top: 1px solid var(--ring);
-        }
-
-        @media (max-width:750px) {
-            .highlight .grid, .res-grid { grid-template-columns: 1fr; }
-            .is-center-wrap { width: 90%; }
-            .car-left, .car-right { display: none; }
-            .hours-grid { grid-template-columns: 1fr 1fr; font-size: 14px;}
-            .contact-grid { grid-template-columns: 1fr; }
-            .map-iframe-wrapper{ height: 420px; }
-            .map-iframe-wrapper iframe{ height: 100%; }
-        }
-    </style>
-</head>
-
-<body data-theme="dark">
 <header>
-    <div class="container">
-        <nav>
-            <div class="brand">
-                <img src="https://i.imgur.com/NxIzqaN.png" alt="Ristorante Belvedere Logo" id="site-logo">
-            </div>
-            <ul>
-                <li><a href="#about" id="nav-about">Über uns</a></li>
-                <li><a href="#menu" id="nav-menu">Speisekarte</a></li>
-                <li><a href="#gallery" id="nav-gallery">Galerie</a></li>
-                <li><a href="#tour360" id="nav-tour">360°-Tour</a></li>
-                <li><a href="#reserve" id="nav-reserve">Reservationen</a></li>
-                <li><a href="#contact" id="nav-contact">Kontakt</a></li>
-            </ul>
-            <div class="lang-switch">
-                <span class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle dark/light theme">
-                    ☀️
-                </span>
-                <select id="langSwitch">
-                    <option value="de" selected>Deutsch</option>
-                    <option value="it">Italiano</option>
-                    <option value="fr">Français</option>
-                    <option value="en">English</option>
-                </select>
-            </div>
-        </nav>
-    </div>
+  <div class="container">
+    <nav>
+      <div class="brand">
+        <img src="https://i.imgur.com/NxIzqaN.png" alt="Ristorante Belvedere Logo" id="site-logo">
+      </div>
+      <ul>
+        <li><a href="#about" id="nav-about">Über uns</a></li>
+        <li><a href="#menu" id="nav-menu">Speisekarte</a></li>
+        <li><a href="#gallery" id="nav-gallery">Galerie</a></li>
+        <li><a href="#tour360" id="nav-tour">360°-Tour</a></li>
+        <li><a href="#reserve" id="nav-reserve">Reservationen</a></li>
+        <li><a href="#contact" id="nav-contact">Kontakt</a></li>
+      </ul>
+      <div class="lang-switch">
+        <span class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle dark/light theme">☀️</span>
+        <select id="langSwitch">
+          <option value="de" selected>Deutsch</option>
+          <option value="it">Italiano</option>
+          <option value="fr">Français</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+    </nav>
+  </div>
 </header>
 
 <section id="about" class="container">
-    <div class="hero">
-        <div class="banner"></div>
-        <img src="https://i.imgur.com/NxIzqaN.png" alt="Ristorante Belvedere" id="hero-logo">
-        <div class="hero-info">
-            <p class="subtitle" id="hero-sub">Das italienische Restaurant in Hofstetten</p>
-            <span class="text-link" id="btn-ver-mas" role="button"><span id="ver-mas-text">Über uns</span></span>
-        </div>
+  <div class="hero">
+    <div class="banner"></div>
+    <img src="https://i.imgur.com/NxIzqaN.png" alt="Ristorante Belvedere" id="hero-logo">
+    <div class="hero-info">
+      <p class="subtitle" id="hero-sub">Das italienische Restaurant in Hofstetten</p>
+      <span class="text-link" id="btn-ver-mas" role="button"><span id="ver-mas-text">Über uns</span></span>
     </div>
+  </div>
 
-    <div id="mini-bio">
-        <h3 id="bio-title">Unsere Philosophie</h3>
-        <p id="bio-text">Seit über 15 Jahren ist das Ristorante Belvedere der Inbegriff italienischer Gastfreundschaft in Hofstetten. Wir setzen auf traditionelle Rezepte aus dem Süden Italiens, frische saisonale Zutaten y un ambiente acogedor.</p>
-    </div>
+  <div id="mini-bio">
+    <h3 id="bio-title">Unsere Philosophie</h3>
+    <p id="bio-text">
+      Willkommen im Ristorante Belvedere in Hofstetten. Bei uns treffen italienische Klassiker auf frische, saisonale Zutaten und herzliche Gastfreundschaft.
+      Ob gemütliches Abendessen, Take-away oder Anlass mit Gruppe – wir freuen uns auf Ihren Besuch.
+    </p>
+  </div>
 
-    <div class="card" style="padding: 20px; margin: 20px 0;">
-        <span class="badge news-badge" id="news-badge" style="display:inline-block;padding:4px 8px;border-radius:999px;background:var(--ring);color:var(--accent);font-weight:700;font-size:12px; transition: background 0.3s;">Aktuell</span>
-        <h3 id="news-title" style="margin-top:10px">Achtung: Postfinance Kartenzahlungen nicht möglich</h3>
-        <p id="news-text">Aufgrund technischer Probleme akzeptieren wir derzeit keine Zahlungen mit Postfinance-Karten. Bitte nutzen Sie andere Karten oder Barzahlung.</p>
-    </div>
+  <div class="card" style="padding: 20px; margin: 20px 0;">
+    <span class="badge news-badge" id="news-badge" style="display:inline-block;padding:4px 8px;border-radius:999px;background:var(--ring);color:var(--accent);font-weight:700;font-size:12px; transition: background 0.3s;">Aktuell</span>
+    <h3 id="news-title" style="margin-top:10px">Achtung: Postfinance Kartenzahlungen nicht möglich</h3>
+    <p id="news-text">Aufgrund technischer Probleme akzeptieren wir derzeit keine Zahlungen mit Postfinance-Karten. Bitte nutzen Sie andere Karten oder Barzahlung.</p>
+  </div>
 
-    <div id="hours" class="hours">
-        <div class="card">
-            <h3 id="hours-title" style="text-align:center">Öffnungszeiten</h3>
-            <div class="hours-grid">
-                <div><strong id="h-mon">Montag</strong></div><div><span id="h-closed-mon">Geschlossen</span></div>
-                <div><strong id="h-difr">Di - Fr</strong></div><div>10:00-14:00 / 17:30-00:00</div>
-                <div><strong id="h-sat">Samstag</strong></div><div>17:30 - 00:00</div>
-                <div><strong id="h-sun">Sonntag</strong></div><div>11:00 - 23:00</div>
-            </div>
-        </div>
+  <div id="hours" class="hours">
+    <div class="card">
+      <h3 id="hours-title" style="text-align:center">Öffnungszeiten</h3>
+      <div class="hours-grid">
+        <div><strong id="h-mon">Montag</strong></div><div><span id="h-closed-mon">Geschlossen</span></div>
+        <div><strong id="h-difr">Di - Fr</strong></div><div>10:00-14:00 / 17:30-00:00</div>
+        <div><strong id="h-sat">Samstag</strong></div><div>17:30 - 00:00</div>
+        <div><strong id="h-sun">Sonntag</strong></div><div>11:00 - 23:00</div>
+      </div>
     </div>
+  </div>
 </section>
 
 <div class="container" style="text-align: center; padding: 20px 0 40px;">
-    <a href="#menu" class="btn" id="btn-ver-menu" style="padding: 15px 30px; font-size: 18px;">Unsere Speisekarte entdecken</a>
+  <a href="#menu" class="btn" id="btn-ver-menu" style="padding: 15px 30px; font-size: 18px;">Unsere Speisekarte entdecken</a>
 </div>
 
 <section class="highlight container">
-    <div class="grid">
-        <div class="card">
-            <div>
-                <h4 id="card-events-title">Veranstaltungen & Gruppen</h4>
-                <p id="card-events-text">Planen Sie ein Fest? Wir bieten den perfekten Rahmen für Gruppen.</p>
-            </div>
-            <a class="btn secondary" href="#reserve" id="card-events-cta">Anfrage senden</a>
-        </div>
-        <div class="card">
-            <div>
-                <h4 id="card-take-title">Take-away</h4>
-                <p id="card-take-text">Alle Gerichte auch zum Mitnehmen bestellen.</p>
-            </div>
-            <a class="btn whatsapp" href="https://wa.me/41617314287" target="_blank" id="card-take-cta">WhatsApp Bestellung</a>
-            <small id="card-take-note" style="text-align:center; margin-top:10px; opacity:0.6;">Anruf oder WhatsApp möglich.</small>
-        </div>
+  <div class="grid">
+    <div class="card">
+      <div>
+        <h4 id="card-events-title">Veranstaltungen & Gruppen</h4>
+        <p id="card-events-text">Planen Sie ein Fest? Wir bieten den perfekten Rahmen für Gruppen.</p>
+      </div>
+      <a class="btn secondary" href="#reserve" id="card-events-cta">Anfrage senden</a>
     </div>
+    <div class="card">
+      <div>
+        <h4 id="card-take-title">Take-away</h4>
+        <p id="card-take-text">Alle Gerichte auch zum Mitnehmen bestellen.</p>
+      </div>
+      <a class="btn whatsapp" href="https://wa.me/41617314287" target="_blank" id="card-take-cta">WhatsApp Bestellung</a>
+      <small id="card-take-note" style="text-align:center; margin-top:10px; opacity:0.6;">Anruf oder WhatsApp möglich.</small>
+    </div>
+  </div>
 </section>
 
+<!-- TU MENÚ (lo dejo tal cual, para no romper precios/nombres) -->
 <section id="menu" class="container">
-    <h2 id="menu-title" style="text-align:center; margin-bottom: 25px;">Speisekarte</h2>
-    <div class="menu-bar">
-        <button class="btn secondary menu-filter active" data-target="#menu-cucina" id="opt-antipasti">Antipasti</button>
-        <button class="btn secondary menu-filter" data-target="#menu-paste" id="opt-paste">Teigwaren</button>
-        <button class="btn secondary menu-filter" data-target="#menu-pizze" id="opt-pizze">Pizze</button>
-        <button class="btn secondary menu-filter" data-target="#menu-carne" id="opt-carne">Fisch & Fleisch</button>
-        <button class="btn secondary menu-filter" data-target="#menu-vini" id="opt-vini">Wein</button>
-    </div>
+  <h2 id="menu-title" style="text-align:center; margin-bottom: 25px;">Speisekarte</h2>
+  <div class="menu-bar">
+    <button class="btn secondary menu-filter active" data-target="#menu-cucina" id="opt-antipasti">Antipasti</button>
+    <button class="btn secondary menu-filter" data-target="#menu-paste" id="opt-paste">Teigwaren</button>
+    <button class="btn secondary menu-filter" data-target="#menu-pizze" id="opt-pizze">Pizze</button>
+    <button class="btn secondary menu-filter" data-target="#menu-carne" id="opt-carne">Fisch & Fleisch</button>
+    <button class="btn secondary menu-filter" data-target="#menu-vini" id="opt-vini">Wein</button>
+  </div>
 
-    <div id="menu-cucina" class="card menu-section" style="display: block;">
-        <h4 id="title-cucina">Antipasti, Suppen & Salate</h4>
-        <p style="font-weight:700; color:var(--accent); margin-top:20px; border-bottom:1px solid var(--ring); padding-bottom:5px;" id="title-cucina-sub1">Antipasti / Vorspeisen</p>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-1-1">Antipasti misti (Teller)</span><span class="dish-desc" id="desc-1-1">Verschiedene italienischen Vorspeisen</span></div><div class="dish-price">Fr. 26.00</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-1-2">Bruschette</span><span class="dish-desc" id="desc-1-2">Geröstete Brotscheiben mit marinierten Tomaten</span></div><div class="dish-price">Fr. 9.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-1-3">Melanzana Gratinata</span><span class="dish-desc" id="desc-1-3">Gratinierte Auberginen</span></div><div class="dish-price">Fr. 16.00</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-1-4">Carpaccio di Manzo</span><span class="dish-desc" id="desc-1-4">Rinds Carpaccio</span></div><div class="dish-price">Fr. 21.50</div></div>
-
-        <p style="font-weight:700; color:var(--accent); margin-top:20px; border-bottom:1px solid var(--ring); padding-bottom:5px;" id="title-cucina-sub2">Zuppe / Suppen</p>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-1-5">Crema di Pomodoro</span><span class="dish-desc" id="desc-1-5">Tomatencremesuppe</span></div><div class="dish-price">Fr. 8.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-1-6">Crema di Zucca</span><span class="dish-desc" id="desc-1-6">Kürbiscremesuppe</span></div><div class="dish-price">Fr. 8.50</div></div>
-
-        <p style="font-weight:700; color:var(--accent); margin-top:20px; border-bottom:1px solid var(--ring); padding-bottom:5px;" id="title-cucina-sub3">Insalate / Salate</p>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-1-7">Insalata verde</span><span class="dish-desc" id="desc-1-7">Grüner Salat</span></div><div class="dish-price">Fr. 8.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-1-8">Insalata mista</span><span class="dish-desc" id="desc-1-8">Gemischter Salat</span></div><div class="dish-price">Fr. 9.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-1-9">Insalata Caprese</span><span class="dish-desc" id="desc-1-9">Tomaten mit Mozzarella</span></div><div class="dish-price">Fr. 14.00</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-1-10">Insalata Valeriana con Uovo</span><span class="dish-desc" id="desc-1-10">Nüsslisalat mit Ei</span></div><div class="dish-price">Fr. 12.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-1-11">Insalata Valeriana con Uovo e Speck</span><span class="dish-desc" id="desc-1-11">Nüsslisalat mit Ei und Speck</span></div><div class="dish-price">Fr. 14.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-1-12">Wurstkäsesalat Einfach</span><span class="dish-desc" id="desc-1-12"></span></div><div class="dish-price">Fr. 12.00</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-1-13">Wurstkäsesalat garniert</span><span class="dish-desc" id="desc-1-13"></span></div><div class="dish-price">Fr. 16.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-1-14">Wurstkäsesalat mit Pommes frites</span><span class="dish-desc" id="desc-1-14"></span></div><div class="dish-price">Fr. 18.50</div></div>
-    </div>
-
-    <div id="menu-paste" class="card menu-section">
-        <h4 id="title-paste">La Pasta / Teigwaren</h4>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-2-1">Spaghetti al Pomodoro</span><span class="dish-desc" id="desc-2-1">Mit Tomatensauce</span></div><div class="dish-price">Fr. 18.00</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-2-2">Spaghetti del Marinaio</span><span class="dish-desc" id="desc-2-2">Mit Olivenöl, Sardellen, Knoblauch, Tomaten und Peperoncini</span></div><div class="dish-price">Fr. 21.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-2-3">Fagottini di Tartufo con salsa al Tartufo</span><span class="dish-desc" id="desc-2-3">Mit Trüffel gefüllte Teigtaschen mit Trüffelsauce</span></div><div class="dish-price">Fr. 26.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-2-4">Orecchiette con Cime di rape e Salsiccia Piccante</span><span class="dish-desc" id="desc-2-4">Teigwaren mit Stängelkohl und Pikanter Schweinswurst</span></div><div class="dish-price">Fr. 23.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-2-5">Risotto ai Porcini</span><span class="dish-desc" id="desc-2-5">Risotto mit Steinpilzen</span></div><div class="dish-price">Fr. 24.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-2-6">Panciotti Ripieni di Capesante e Gambero Rosso con salsa allo Zafferano</span><span class="dish-desc" id="desc-2-6">Ravioli mit Jakobs Muscheln und Rote Krevette Füllung an Safran Sauce</span></div><div class="dish-price">Fr. 25.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-2-7">Trofie al Profumo di mare</span><span class="dish-desc" id="desc-2-7">Hausgemachte Teigwaren mit Krevetten, Spinat und Tomatensauce</span></div><div class="dish-price">Fr. 24.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-2-8">Rosette della Casa</span><span class="dish-desc" id="desc-2-8">Hausgemachte Teigwaren mit Mortadella und Spinat, mit Rahm und Parmesan überbacken</span></div><div class="dish-price">Fr. 25.00</div></div>
-    </div>
-
-    <div id="menu-pizze" class="card menu-section">
-        <h4 id="title-pizze">Le Pizze / Pizze</h4>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-1">Pizza Margherita</span><span class="dish-desc" id="desc-3-1">Tomatensauce, Mozzarella</span></div><div class="dish-price">Fr. 16.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-2">Pizza Prosciutto</span><span class="dish-desc" id="desc-3-2">Tomatensauce, Mozzarella, Schinken</span></div><div class="dish-price">Fr. 19.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-3">Pizza ai Funghi</span><span class="dish-desc" id="desc-3-3">Tomatensauce, Mozzarella, Pilzen</span></div><div class="dish-price">Fr. 19.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-4">Pizza Prosciutto e funghi</span><span class="dish-desc" id="desc-3-4">Tomatensauce, Mozzarella, Schinken und Pilzen</span></div><div class="dish-price">Fr. 21.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-5">Pizza Napoli</span><span class="dish-desc" id="desc-3-5">Tomatensauce, Mozzarella, Sardellen, Kapern</span></div><div class="dish-price">Fr. 21.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-6">Pizza Capricciosa</span><span class="dish-desc" id="desc-3-6">Tomatensauce, Mozzarella, Schinken, Pilzen, Parmesan</span></div><div class="dish-price">Fr. 23.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-7">Pizza Fiorentina</span><span class="dish-desc" id="desc-3-7">Tomatensauce, Mozzarella, Spinat</span></div><div class="dish-price">Fr. 21.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-8">Pizza Salame</span><span class="dish-desc" id="desc-3-8">Tomatensauce, Mozzarella, Salami</span></div><div class="dish-price">Fr. 20.00</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-9">Pizza Calabrese</span><span class="dish-desc" id="desc-3-9">Tomatensauce, Mozzarella, Anduja, Auberginen, Scharfe Salami</span></div><div class="dish-price">Fr. 24.00</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-10">Pizza Calzone</span><span class="dish-desc" id="desc-3-10">Tomatensauce, Mozzarella, Schinken, Spinat, und Ei</span></div><div class="dish-price">Fr. 24.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-11">Pizza quattro Stagioni</span><span class="dish-desc" id="desc-3-11">Tomatensauce, Mozzarella, Schinken, Pilzen, Auberginen, Artischocken</span></div><div class="dish-price">Fr. 25.00</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-12">Pizza Gorgonzola</span><span class="dish-desc" id="desc-3-12">Tomatensauce, Mozzarella, Gorgonzola</span></div><div class="dish-price">Fr. 21.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-13">Pizza Hawaii</span><span class="dish-desc" id="desc-3-13">Tomatensauce, Mozzarella, Schinken, Ananas</span></div><div class="dish-price">Fr. 22.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-14">Pizza Belvedere</span><span class="dish-desc" id="desc-3-14">Tomatensauce, Mozzarella, Rucola, Parmesan</span></div><div class="dish-price">Fr. 22.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-15">Pizza Crudo</span><span class="dish-desc" id="desc-3-15">Tomatensauce, Mozzarella, Rohschinken</span></div><div class="dish-price">Fr. 24.00</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-16">Pizza della Casa</span><span class="dish-desc" id="desc-3-16">Tomatensauce, Mozzarella, Rohschinken, Rucola, Parmesan</span></div><div class="dish-price">Fr. 27.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-17">Pizza al Tonno</span><span class="dish-desc" id="desc-3-17">Tomatensauce, Mozzarella, Thon</span></div><div class="dish-price">Fr. 21.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-18">Pizza Sennmatt</span><span class="dish-desc" id="desc-3-18">Tomatensauce, Mozzarella, Schinken, Speck, Zwiebeln, Knoblauch Peperoncini</span></div><div class="dish-price">Fr. 25.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-3-19">Pizza Bambini / Kinder Pizza (Bis 8 Jahre)</span><span class="dish-desc" id="desc-3-19">Margherita, Prosciutto, Salami, Hawaii</span></div><div class="dish-price">Fr. 14.00</div></div>
-    </div>
-
-    <div id="menu-carne" class="card menu-section">
-        <h4 id="title-carne">Pesce e Carne / Fisch und Fleisch</h4>
-        <p style="font-weight:700; color:var(--accent); margin-top:20px; border-bottom:1px solid var(--ring); padding-bottom:5px;" id="title-carne-sub1">Fisch / Pesce</p>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-4-1">Gamberetti al Prosecco</span><span class="dish-desc" id="desc-4-1">Krevetten an Prosecco Sauce</span></div><div class="dish-price">Fr. 32.00</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-4-2">Calamari Fritti</span><span class="dish-desc" id="desc-4-2">Frittierte Calamares Ringe</span></div><div class="dish-price">Fr. 28.00</div></div>
-
-        <p style="font-weight:700; color:var(--accent); margin-top:20px; border-bottom:1px solid var(--ring); padding-bottom:5px;" id="title-carne-sub2">Fleisch / Carne</p>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-4-3">Scaloppine di Maiale Impanate</span><span class="dish-desc" id="desc-4-3">Panierte Schweinschnitzeln</span></div><div class="dish-price">Fr. 26.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-4-4">Cordon Bleu di Maiale</span><span class="dish-desc" id="desc-4-4">Schweins Cordon bleu</span></div><div class="dish-price">Fr. 29.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-4-5">Scaloppine di Maiale con salsa alla Panna</span><span class="dish-desc" id="desc-4-5">Schweineschnitzeln mit Rahmsauce</span></div><div class="dish-price">Fr. 28.00</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-4-6">Fegato di Vitello alla Veneziana</span><span class="dish-desc" id="desc-4-6">Kalbsleber mit Zwiebeln Sauce</span></div><div class="dish-price">Fr. 29.50</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-4-7">Bistecca di Vitello con salsa alle Spugnole</span><span class="dish-desc" id="desc-4-7">Kalbsteak mit Morchel Sauce</span></div><div class="dish-price">Fr. 43.00</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-4-8">Filetto di Manzo alla Griglia</span><span class="dish-desc" id="desc-4-8">Rindsfilet vom Grill</span></div><div class="dish-price">Fr. 48.00</div></div>
-        <div class="dish"><div class="dish-info"><span class="dish-name" id="name-4-9">Ossobuco di Vitello</span><span class="dish-desc" id="desc-4-9">Kalbs Ossobuco</span></div><div class="dish-price">Fr. 33.00</div></div>
-
-        <p style="text-align: right; margin-top: 15px; font-size: 14px; color: var(--muted);" id="carne-note">
-            Beilagen: Pommes frites, Rösti, Hausgemachte Spätzle, Nudeln, Risotto
-        </p>
-    </div>
-
-    <div id="menu-vini" class="card menu-section">
-        <h4 id="title-vini">Wein</h4>
-        <p id="desc-vini">Weinkarte wird aktualisiert.</p>
-    </div>
+  <!-- ... (tu contenido del menú sigue igual) ... -->
+  <!-- Para ahorrar espacio aquí en el chat, NO lo repito.
+       Mantén TODO tu bloque de menú exactamente como lo tienes. -->
 </section>
 
 <section id="gallery" class="container" style="padding: 40px 0;">
-    <h2 id="gallery-title" style="text-align:center">Galerie</h2>
-    <div class="car-viewport">
-        <div class="car-img-wrap car-left"><img id="gal-left" src="" alt="Foto anterior"></div>
-        <div class="car-img-wrap is-center-wrap"><img id="gal-center" src="" alt="Foto central"></div>
-        <div class="car-img-wrap car-right"><img id="gal-right" src="" alt="Foto siguiente"></div>
-    </div>
-    <div class="car-dots"></div>
-    <div style="display:flex; justify-content:center; gap:20px; margin-top:20px">
-        <button class="btn secondary" id="prevGal">◀</button>
-        <button class="btn secondary" id="nextGal">▶</button>
-    </div>
+  <h2 id="gallery-title" style="text-align:center">Galerie</h2>
+  <div class="car-viewport">
+    <div class="car-img-wrap car-left"><img id="gal-left" src="" alt="Foto anterior"></div>
+    <div class="car-img-wrap is-center-wrap"><img id="gal-center" src="" alt="Foto central"></div>
+    <div class="car-img-wrap car-right"><img id="gal-right" src="" alt="Foto siguiente"></div>
+  </div>
+  <div class="car-dots"></div>
+  <div style="display:flex; justify-content:center; gap:20px; margin-top:20px">
+    <button class="btn secondary" id="prevGal">◀</button>
+    <button class="btn secondary" id="nextGal">▶</button>
+  </div>
 </section>
 
 <section id="video-promo" class="container" style="padding: 20px 0 40px;">
-    <h2 id="video-title" style="text-align:center; margin-bottom: 25px;">Unser Restaurant Video</h2>
-    <div class="card" style="padding: 10px;">
-        <div class="video-wrapper">
-            <iframe id="youtube-frame"
-                    src="https://www.youtube.com/embed/yC2_38m86Qk"
-                    title="Restaurant Promotion Video" frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-            </iframe>
-        </div>
+  <h2 id="video-title" style="text-align:center; margin-bottom: 25px;">Unser Restaurant Video</h2>
+  <div class="card" style="padding: 10px;">
+    <div class="video-wrapper">
+      <iframe id="youtube-frame"
+        src="https://www.youtube.com/embed/yC2_38m86Qk"
+        title="Restaurant Promotion Video" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+      </iframe>
     </div>
+  </div>
 </section>
 
 <section id="tour360" class="container">
-    <h2 id="tour-title" style="text-align:center">360°-Tour</h2>
+  <h2 id="tour-title" style="text-align:center">360°-Tour</h2>
 
-    <div class="tour-bar">
-        <button class="btn secondary tour-btn active" data-tour="inside1" id="tour-inside1">Innen 1</button>
-        <button class="btn secondary tour-btn" data-tour="inside2" id="tour-inside2">Innen 2</button>
-        <button class="btn secondary tour-btn" data-tour="inside3" id="tour-inside3">Innen 3</button>
-        <button class="btn secondary tour-btn" data-tour="parking" id="tour-parking">Parkplatz</button>
-    </div>
+  <div class="tour-bar">
+    <button class="btn secondary tour-btn active" data-tour="inside1" id="tour-inside1">Innen 1</button>
+    <button class="btn secondary tour-btn" data-tour="inside2" id="tour-inside2">Innen 2</button>
+    <button class="btn secondary tour-btn" data-tour="inside3" id="tour-inside3">Innen 3</button>
+    <button class="btn secondary tour-btn" data-tour="parking" id="tour-parking">Parkplatz</button>
+  </div>
 
-    <div class="map-iframe-wrapper">
-        <iframe
-                id="tourFrame"
-                src="https://www.google.com/maps/embed?pb=!4v1765555577996!6m8!1m7!1sCAoSFkNJSE0wb2dLRUlDQWdJREdvLWlRZUE.!2m2!1d47.47681845369535!2d7.513003221831509!3f257.250822250953!4f-16.57012713056281!5f0.4000000000000002"
-                loading="lazy"
-                allowfullscreen
-                referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
-    </div>
+  <div class="map-iframe-wrapper">
+    <iframe
+      id="tourFrame"
+      src=""
+      loading="lazy"
+      allowfullscreen
+      referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
 
-    <p id="pano-note" style="text-align: center; margin-top: 10px; font-size: 14px; color: var(--muted);">
-        *Hinweis: Der virtuelle Rundgang kann Ladezeiten benötigen. Verwenden Sie die Pfeile im Bild, um den Standort zu wechseln.
-    </p>
+  <p id="pano-note" style="text-align: center; margin-top: 10px; font-size: 14px; color: var(--muted);">
+    *Hinweis: Der virtuelle Rundgang kann Ladezeiten benötigen. Verwenden Sie die Pfeile im Bild, um den Standort zu wechseln.
+  </p>
 
-    <div style="text-align:center; margin-top: 10px;">
-        <a class="btn secondary" target="_blank"
-           href="https://www.google.com/maps/dir/?api=1&destination=Fl%C3%BChstrasse%2030%2C%204114%20Hofstetten%2C%20Switzerland" id="tour-gmaps">
-            In Google Maps öffnen
-        </a>
-    </div>
+  <div style="text-align:center; margin-top: 10px;">
+    <a class="btn secondary" target="_blank"
+      href="https://www.google.com/maps/dir/?api=1&destination=Fl%C3%BChstrasse%2030%2C%204114%20Hofstetten%2C%20Switzerland" id="tour-gmaps">
+      In Google Maps öffnen
+    </a>
+  </div>
 </section>
 
 <section id="reserve" class="container" style="padding: 40px 0;">
-    <div class="card" style="padding: 30px;">
-        <h2 id="reserve-title" style="text-align:center">Reservationen</h2>
-        <form id="resForm" class="res-grid">
-            <div><label id="lab-name">Name</label><input type="text" id="rName" required></div>
-            <div><label id="lab-email">E-mail</label><input type="email" id="rEmail" required></div>
-            <div><label id="lab-phone">Telefon</label><input type="tel" id="rPhone" required></div>
-            <div><label id="lab-people">Personen</label>
-                <select id="rPeople">
-                    <option>2</option><option>4</option><option>6</option><option>8</option>
-                    <option id="opt-large-group">9+ (Gruppe / Event)</option>
-                </select>
-            </div>
-            <div><label id="lab-date">Datum</label><input type="date" required></div>
-            <div><label id="lab-time">Uhrzeit</label><input type="time" required></div>
+  <div class="card" style="padding: 30px;">
+    <h2 id="reserve-title" style="text-align:center">Reservationen</h2>
+    <form id="resForm" class="res-grid">
+      <div><label id="lab-name">Name</label><input type="text" id="rName" required></div>
+      <div><label id="lab-email">E-mail</label><input type="email" id="rEmail" required></div>
+      <div><label id="lab-phone">Telefon</label><input type="tel" id="rPhone" required></div>
+      <div><label id="lab-people">Personen</label>
+        <select id="rPeople">
+          <option>2</option><option>4</option><option>6</option><option>8</option>
+          <option id="opt-large-group">9+ (Gruppe / Event)</option>
+        </select>
+      </div>
+      <div><label id="lab-date">Datum</label><input type="date" required></div>
+      <div><label id="lab-time">Uhrzeit</label><input type="time" required></div>
 
-            <div class="full"><label id="lab-notes">Notizen</label><textarea id="rNotes" placeholder="Allergien, spezieller Anlass..."></textarea></div>
-            <button type="submit" class="btn full" id="btn-submit-res">Reservation absenden</button>
-        </form>
-    </div>
+      <div class="full"><label id="lab-notes">Notizen</label><textarea id="rNotes" placeholder="Allergien, spezieller Anlass..."></textarea></div>
+      <button type="submit" class="btn full" id="btn-submit-res">Reservation absenden</button>
+    </form>
+  </div>
 </section>
 
 <section id="contact" class="container" style="padding-bottom:60px">
-    <div class="card" style="padding:25px">
-        <h2 id="contact-title">Kontakt & Anfahrt</h2>
-        <div class="contact-grid">
-            <div>
-                <p><strong>Flühstrasse 30<br>4114 Hofstetten SO</strong></p>
-                <p id="tel-info">Tel: <a href="tel:+41617314287" style="color:var(--accent); font-weight:700">061 731 42 87</a></p>
-                <p id="email-info">Email: ristorante-belvedere@bluewin.ch</p>
-                <p style="margin-top:15px"><a href="https://www.instagram.com/ristorantebelvederehofst/" target="_blank" style="color:var(--accent)">Instagram</a></p>
+  <div class="card" style="padding:25px">
+    <h2 id="contact-title">Kontakt & Anfahrt</h2>
+    <div class="contact-grid">
+      <div>
+        <p><strong>Flühstrasse 30<br>4114 Hofstetten SO</strong></p>
+        <p id="tel-info">Tel: <a href="tel:+41617314287" style="color:var(--accent); font-weight:700">061 731 42 87</a></p>
+        <p id="email-info">Email: ristorante-belvedere@bluewin.ch</p>
+        <p style="margin-top:15px"><a href="https://www.instagram.com/ristorantebelvederehofst/" target="_blank" style="color:var(--accent)">Instagram</a></p>
 
-                <div style="margin-top:16px">
-                    <a class="btn secondary" target="_blank"
-                       href="https://www.google.com/maps/dir/?api=1&destination=Fl%C3%BChstrasse%2030%2C%204114%20Hofstetten%2C%20Switzerland" id="btn-route-plan">
-                        Route planen
-                    </a>
-                </div>
-            </div>
-
-            <div class="contact-map-wrapper">
-                <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2696.674264152667!2d7.513089717901893!3d47.47677672203327!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4791c6d50a2dd6fb%3A0x8199a578b607b1f5!2sRistorante%20Belvedere!5e0!3m2!1ses!2sch!4v1765555646243!5m2!1ses!2sch"
-                        loading="lazy"
-                        allowfullscreen
-                        referrerpolicy="no-referrer-when-downgrade">
-                </iframe>
-            </div>
+        <div style="margin-top:16px">
+          <a class="btn secondary" target="_blank"
+            href="https://www.google.com/maps/dir/?api=1&destination=Fl%C3%BChstrasse%2030%2C%204114%20Hofstetten%2C%20Switzerland" id="btn-route-plan">
+            Route planen
+          </a>
         </div>
+      </div>
+
+      <div class="contact-map-wrapper">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2696.674264152667!2d7.513089717901893!3d47.47677672203327!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4791c6d50a2dd6fb%3A0x8199a578b607b1f5!2sRistorante%20Belvedere!5e0!3m2!1ses!2sch!4v1765555646243!5m2!1ses!2sch"
+          loading="lazy"
+          allowfullscreen
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
     </div>
+  </div>
 </section>
 
 <footer>
-    <div class="container" style="text-align:center; padding:30px; opacity:0.5; font-size:13px">
-        © <span id="year"></span> Ristorante Belvedere — Hofstetten
-    </div>
+  <div class="container" style="text-align:center; padding:30px; opacity:0.5; font-size:13px">
+    © <span id="year"></span> Ristorante Belvedere — Hofstetten
+  </div>
 </footer>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', function(){
 
-        // ===============================================
-        // *** 1. GALERÍA DE IMÁGENES (URLs de Imgur) ***
-        const galleryImages = [
-            'https://i.imgur.com/mzp7NXg.jpg',
-            'https://i.imgur.com/n5aqkKn.jpg',
-            'https://i.imgur.com/jmvL6TT.jpg',
-            'https://i.imgur.com/NtaMwrK.jpg',
-            'https://i.imgur.com/YEB3pfo.jpg',
-            'https://i.imgur.com/DctSdGc.jpg',
-            'https://i.imgur.com/iRViDRi.jpg',
-            'https://i.imgur.com/h91sjnw.jpg'
-        ];
-        // ===============================================
+  // ===============================================
+  // 1) GALERÍA (URLs)
+  const galleryImages = [
+    'https://i.imgur.com/mzp7NXg.jpg',
+    'https://i.imgur.com/n5aqkKn.jpg',
+    'https://i.imgur.com/jmvL6TT.jpg',
+    'https://i.imgur.com/NtaMwrK.jpg',
+    'https://i.imgur.com/YEB3pfo.jpg',
+    'https://i.imgur.com/DctSdGc.jpg',
+    'https://i.imgur.com/iRViDRi.jpg',
+    'https://i.imgur.com/h91sjnw.jpg'
+  ];
 
-        // ====== 2) MENU TABS ======
-        const menuFilters = document.querySelectorAll('.menu-filter');
-        const menuSections = document.querySelectorAll('.menu-section');
+  // ====== 2) MENU TABS ======
+  const menuFilters = document.querySelectorAll('.menu-filter');
+  const menuSections = document.querySelectorAll('.menu-section');
 
-        function filterMenu(targetId) {
-            menuSections.forEach(section => {
-                section.style.display = 'none';
-            });
+  function filterMenu(targetId) {
+    menuSections.forEach(section => section.style.display = 'none');
+    menuFilters.forEach(filter => filter.classList.remove('active'));
 
-            menuFilters.forEach(filter => {
-                filter.classList.remove('active');
-            });
+    const targetSection = document.querySelector(targetId);
+    const targetButton = document.querySelector(`[data-target="${targetId}"]`);
 
-            const targetSection = document.querySelector(targetId);
-            const targetButton = document.querySelector(`[data-target="${targetId}"]`);
+    if (targetSection) targetSection.style.display = 'block';
+    if (targetButton) targetButton.classList.add('active');
+  }
 
-            if (targetSection) {
-                targetSection.style.display = 'block';
-            }
-            if (targetButton) {
-                targetButton.classList.add('active');
-            }
-        }
+  // Si tu menú está en otro bloque, esto igual funciona (mientras existan .menu-section)
+  if (menuSections.length) filterMenu('#menu-cucina');
 
-        // Asegurar que el menú se abre como primer paso del DOMContentLoaded
-        filterMenu('#menu-cucina');
-
-        menuFilters.forEach(button => {
-            button.addEventListener('click', (e) => {
-                const target = e.target.getAttribute('data-target');
-                filterMenu(target);
-            });
-        });
-
-
-        // ====== 3) CARRUSEL DE GALERÍA DE IMÁGENES ======
-        let currentGalleryIndex = 0;
-
-        const centerImg = document.getElementById('gal-center');
-        const leftImg = document.getElementById('gal-left');
-        const rightImg = document.getElementById('gal-right');
-        const dotContainer = document.querySelector('.car-dots');
-        const prevButton = document.getElementById('prevGal');
-        const nextButton = document.getElementById('nextGal');
-
-        function updateGallery(newIndex) {
-            if (galleryImages.length === 0 || !centerImg || !leftImg || !rightImg) return;
-
-            const total = galleryImages.length;
-            currentGalleryIndex = (newIndex + total) % total;
-
-            const leftIndex = (currentGalleryIndex - 1 + total) % total;
-            const rightIndex = (currentGalleryIndex + 1) % total;
-
-            centerImg.src = galleryImages[currentGalleryIndex];
-            leftImg.src = galleryImages[leftIndex];
-            rightImg.src = galleryImages[rightIndex];
-
-            document.querySelectorAll('.car-dot').forEach((dot, index) => {
-                dot.setAttribute('aria-selected', index === currentGalleryIndex);
-            });
-        }
-
-        function moveGallery(direction) {
-            updateGallery(currentGalleryIndex + direction);
-        }
-
-        function initializeGallery() {
-            if (galleryImages.length === 0) return;
-
-            dotContainer.innerHTML = '';
-            galleryImages.forEach((_, index) => {
-                const dot = document.createElement('span');
-                dot.className = 'car-dot';
-                dot.setAttribute('role', 'button');
-                dot.addEventListener('click', () => updateGallery(index));
-                dotContainer.appendChild(dot);
-            });
-
-            updateGallery(0);
-        }
-
-        if (prevButton && nextButton) {
-            prevButton.addEventListener('click', () => moveGallery(-1));
-            nextButton.addEventListener('click', () => moveGallery(1));
-        }
-
-        initializeGallery();
-
-
-        // ====== 4) TOUR 360 (selector estable) ======
-        const tourLinks = {
-            inside1: "https://www.google.com/maps/embed?pb=!4v1765555577996!6m8!1m7!1sCAoSFkNJSE0wb2dLRUlDQWdJREdvLWlRZUE.!2m2!1d47.47681845369535!2d7.513003221831509!3f257.250822250953!4f-16.57012713056281!5f0.4000000000000002",
-            inside2: "https://www.google.com/maps/embed?pb=!4v1765555610220!6m8!1m7!1sCAoSFkNJSE0wb2dLRUlDQWdJREdvLWlvUGc.!2m2!1d47.47681838335772!2d7.512932120561533!3f280!4f10!5f0.7820865974627469",
-            inside3: "https://www.google.com/maps/embed?pb=!4v1765555610220!6m8!1m7!1sCAoSFkNJSE0wb2dLRUlDQWdJREdvLWlvUGc.!2m2!1d47.47681838335772!2d7.512932120561533!3f280!4f10!5f0.7820865974627469",
-            parking: "https://www.google.com/maps/embed?pb=!4v1765716346457!6m8!1m7!1sdhgjW4wTaTTddlSfO_mOKw!2m2!1d47.47670587846076!2d7.512803695443861!3f49.18887000000001!4f0!5f0.7820865974627469"
-        };
-
-        const tourFrame = document.getElementById('tourFrame');
-        const tourBtns = document.querySelectorAll('.tour-btn');
-
-        tourBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                tourBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                const key = btn.dataset.tour;
-                if (tourLinks[key] && tourLinks[key] !== "REEMPLAZAR_CON_LINK_DIRECTO_DEL_TOUR_PARKING") {
-                    tourFrame.src = tourLinks[key];
-                }
-            });
-        });
-        // Inicialización del frame del tour 360
-        if (tourFrame && tourLinks.inside1) {
-            tourFrame.src = tourLinks.inside1;
-        }
-
-
-        // ====== 5) TRADUCCIONES (Añadidas descripciones y nombres del menú) ======
-        const translations = {
-            de: {
-                '#nav-about':'Über uns', '#nav-menu':'Speisekarte', '#nav-gallery':'Galerie', '#nav-tour':'360°-Tour', '#nav-reserve':'Reservationen', '#nav-contact':'Kontakt',
-                '#hero-sub':'Das italienische Restaurant in Hofstetten', '#ver-mas-text':'Über uns', '#bio-title':'Unsere Philosophie',
-                '#bio-text':'Seit über 15 Jahren ist das Ristorante Belvedere der Inbegriff italienischer Gastfreundschaft in Hofstetten. Wir setzen auf traditionelle Rezepte aus dem Süden Italiens, frische saisonale Zutaten y un ambiente acogedor.',
-                '#news-badge':'Aktuell', '#news-title':'Achtung: Postfinance Kartenzahlungen nicht möglich',
-                '#news-text':'Aufgrund technischer Probleme akzeptieren wir derzeit keine Zahlungen mit Postfinance-Karten. Bitte nutzen Sie andere Karten oder Barzahlung.',
-                '#hours-title':'Öffnungszeiten', '#h-mon':'Montag', '#h-closed-mon':'Geschlossen',
-                '#btn-ver-menu':'Unsere Speisekarte entdecken',
-                // Menu Tabs
-                '#opt-antipasti':'Antipasti', '#opt-paste':'Teigwaren', '#opt-pizze':'Pizze', '#opt-carne':'Fisch & Fleisch', '#opt-vini':'Wein',
-                '#title-cucina':'Antipasti, Suppen & Salate', '#title-paste':'La Pasta / Teigwaren', '#title-pizze':'Le Pizze / Pizze', '#title-carne':'Pesce e Carne / Fisch und Fleisch', '#title-vini':'Wein', '#desc-vini':'Weinkarte wird aktualisiert.',
-                // Menu 1
-                '#title-cucina-sub1': 'Antipasti / Vorspeisen', '#title-cucina-sub2': 'Zuppe / Suppen', '#title-cucina-sub3': 'Insalate / Salate',
-                '#name-1-1': 'Antipasti misti (Teller)', '#desc-1-1': 'Verschiedene italienischen Vorspeisen',
-                '#name-1-2': 'Bruschette', '#desc-1-2': 'Geröstete Brotscheiben mit marinierten Tomaten',
-                '#name-1-3': 'Melanzana Gratinata', '#desc-1-3': 'Gratinierte Auberginen',
-                '#name-1-4': 'Carpaccio di Manzo', '#desc-1-4': 'Rinds Carpaccio',
-                '#name-1-5': 'Crema di Pomodoro', '#desc-1-5': 'Tomatencremesuppe',
-                '#name-1-6': 'Crema di Zucca', '#desc-1-6': 'Kürbiscremesuppe',
-                '#name-1-7': 'Insalata verde', '#desc-1-7': 'Grüner Salat',
-                '#name-1-8': 'Insalata mista', '#desc-1-8': 'Gemischter Salat',
-                '#name-1-9': 'Insalata Caprese', '#desc-1-9': 'Tomaten mit Mozzarella',
-                '#name-1-10': 'Insalata Valeriana con Uovo', '#desc-1-10': 'Nüsslisalat mit Ei',
-                '#name-1-11': 'Insalata Valeriana con Uovo e Speck', '#desc-1-11': 'Nüsslisalat mit Ei und Speck',
-                '#name-1-12': 'Wurstkäsesalat Einfach', '#desc-1-12': '',
-                '#name-1-13': 'Wurstkäsesalat garniert', '#desc-1-13': '',
-                '#name-1-14': 'Wurstkäsesalat mit Pommes frites', '#desc-1-14': '',
-                // Menu 2
-                '#name-2-1': 'Spaghetti al Pomodoro', '#desc-2-1': 'Mit Tomatensauce',
-                '#name-2-2': 'Spaghetti del Marinaio', '#desc-2-2': 'Mit Olivenöl, Sardellen, Knoblauch, Tomaten und Peperoncini',
-                '#name-2-3': 'Fagottini di Tartufo con salsa al Tartufo', '#desc-2-3': 'Mit Trüffel gefüllte Teigtaschen mit Trüffelsauce',
-                '#name-2-4': 'Orecchiette con Cime di rape e Salsiccia Piccante', '#desc-2-4': 'Teigwaren mit Stängelkohl und Pikanter Schweinswurst',
-                '#name-2-5': 'Risotto ai Porcini', '#desc-2-5': 'Risotto mit Steinpilzen',
-                '#name-2-6': 'Panciotti Ripieni di Capesante e Gambero Rosso con salsa allo Zafferano', '#desc-2-6': 'Ravioli mit Jakobs Muscheln und Rote Krevette Füllung an Safran Sauce',
-                '#name-2-7': 'Trofie al Profumo di mare', '#desc-2-7': 'Hausgemachte Teigwaren mit Krevetten, Spinat und Tomatensauce',
-                '#name-2-8': 'Rosette della Casa', '#desc-2-8': 'Hausgemachte Teigwaren mit Mortadella und Spinat, mit Rahm und Parmesan überbacken',
-                // Menu 3
-                '#name-3-1': 'Pizza Margherita', '#desc-3-1': 'Tomatensauce, Mozzarella',
-                '#name-3-2': 'Pizza Prosciutto', '#desc-3-2': 'Tomatensauce, Mozzarella, Schinken',
-                '#name-3-3': 'Pizza ai Funghi', '#desc-3-3': 'Tomatensauce, Mozzarella, Pilzen',
-                '#name-3-4': 'Pizza Prosciutto e funghi', '#desc-3-4': 'Tomatensauce, Mozzarella, Schinken und Pilzen',
-                '#name-3-5': 'Pizza Napoli', '#desc-3-5': 'Tomatensauce, Mozzarella, Sardellen, Kapern',
-                '#name-3-6': 'Pizza Capricciosa', '#desc-3-6': 'Tomatensauce, Mozzarella, Schinken, Pilzen, Parmesan',
-                '#name-3-7': 'Pizza Fiorentina', '#desc-3-7': 'Tomatensauce, Mozzarella, Spinat',
-                '#name-3-8': 'Pizza Salame', '#desc-3-8': 'Tomatensauce, Mozzarella, Salami',
-                '#name-3-9': 'Pizza Calabrese', '#desc-3-9': 'Tomatensauce, Mozzarella, Anduja, Auberginen, Scharfe Salami',
-                '#name-3-10': 'Pizza Calzone', '#desc-3-10': 'Tomatensauce, Mozzarella, Schinken, Spinat, und Ei',
-                '#name-3-11': 'Pizza quattro Stagioni', '#desc-3-11': 'Tomatensauce, Mozzarella, Schinken, Pilzen, Auberginen, Artischocken',
-                '#name-3-12': 'Pizza Gorgonzola', '#desc-3-12': 'Tomatensauce, Mozzarella, Gorgonzola',
-                '#name-3-13': 'Pizza Hawaii', '#desc-3-13': 'Tomatensauce, Mozzarella, Schinken, Ananas',
-                '#name-3-14': 'Pizza Belvedere', '#desc-3-14': 'Tomatensauce, Mozzarella, Rucola, Parmesan',
-                '#name-3-15': 'Pizza Crudo', '#desc-3-15': 'Tomatensauce, Mozzarella, Rohschinken',
-                '#name-3-16': 'Pizza della Casa', '#desc-3-16': 'Tomatensauce, Mozzarella, Rohschinken, Rucola, Parmesan',
-                '#name-3-17': 'Pizza al Tonno', '#desc-3-17': 'Tomatensauce, Mozzarella, Thon',
-                '#name-3-18': 'Pizza Sennmatt', '#desc-3-18': 'Tomatensauce, Mozzarella, Schinken, Speck, Zwiebeln, Knoblauch Peperoncini',
-                '#name-3-19': 'Pizza Bambini / Kinder Pizza (Bis 8 Jahre)', '#desc-3-19': 'Margherita, Prosciutto, Salami, Hawaii',
-                // Menu 4
-                '#title-carne-sub1': 'Fisch / Pesce', '#title-carne-sub2': 'Fleisch / Carne',
-                '#name-4-1': 'Gamberetti al Prosecco', '#desc-4-1': 'Krevetten an Prosecco Sauce',
-                '#name-4-2': 'Calamari Fritti', '#desc-4-2': 'Frittierte Calamares Ringe',
-                '#name-4-3': 'Scaloppine di Maiale Impanate', '#desc-4-3': 'Panierte Schweinschnitzeln',
-                '#name-4-4': 'Cordon Bleu di Maiale', '#desc-4-4': 'Schweins Cordon bleu',
-                '#name-4-5': 'Scaloppine di Maiale con salsa alla Panna', '#desc-4-5': 'Schweineschnitzeln mit Rahmsauce',
-                '#name-4-6': 'Fegato di Vitello alla Veneziana', '#desc-4-6': 'Kalbsleber mit Zwiebeln Sauce',
-                '#name-4-7': 'Bistecca di Vitello con salsa alle Spugnole', '#desc-4-7': 'Kalbsteak mit Morchel Sauce',
-                '#name-4-8': 'Filetto di Manzo alla Griglia', '#desc-4-8': 'Rindsfilet vom Grill',
-                '#name-4-9': 'Ossobuco di Vitello', '#desc-4-9': 'Kalbs Ossobuco',
-                '#carne-note': 'Beilagen: Pommes frites, Rösti, Hausgemachte Spätzle, Nudeln, Risotto',
-                // Common
-                '#card-events-title':'Veranstaltungen & Gruppen', '#card-events-text':'Planen Sie ein Fest? Wir bieten den perfekten Rahmen für Gruppen.', '#card-events-cta':'Anfrage senden',
-                '#card-take-title':'Take-away', '#card-take-text':'Alle Gerichte auch zum Mitnehmen bestellen.', '#card-take-cta':'WhatsApp Bestellung', '#card-take-note': 'Anruf oder WhatsApp möglich.',
-                '#gallery-title':'Galerie', '#tour-title':'360°-Tour', '#reserve-title':'Reservationen', '#contact-title':'Kontakt & Anfahrt',
-                '#lab-date': 'Datum', '#lab-time': 'Uhrzeit', '#lab-name': 'Name', '#lab-email': 'E-mail', '#lab-phone': 'Telefon', '#lab-people': 'Personen', '#lab-notes': 'Notizen', '#btn-submit-res': 'Reservation absenden',
-                '#pano-note': '*Hinweis: Der virtuelle Rundgang kann Ladezeiten benötigen. Verwenden Sie die Pfeile im Bild, um den Standort zu wechseln.',
-                '#h-difr': 'Di - Fr', '#h-sat': 'Samstag', '#h-sun': 'Sonntag',
-                '#tour-inside1': 'Innen 1', '#tour-inside2': 'Innen 2', '#tour-inside3': 'Innen 3', '#tour-parking': 'Parkplatz', '#tour-gmaps': 'In Google Maps öffnen',
-                '#video-title': 'Unser Restaurant Video',
-                '#h-closed-mon': 'Geschlossen',
-                '#opt-large-group': '9+ (Gruppe / Event)',
-                '#tel-info': 'Tel: <a href="tel:+41617314287" style="color:var(--accent); font-weight:700">061 731 42 87</a>',
-                '#email-info': 'Email: ristorante-belvedere@bluewin.ch', '#btn-route-plan': 'Route planen'
-            },
-            it: {
-                '#nav-about':'Chi Siamo', '#nav-menu':'Menù', '#nav-gallery':'Galleria', '#nav-tour':'Tour 360°', '#nav-reserve':'Prenotazioni', '#nav-contact':'Contatti',
-                '#hero-sub':'Il ristorante italiano a Hofstetten', '#ver-mas-text':'Chi Siamo', '#bio-title':'La Nostra Filosofia',
-                '#bio-text':'Da oltre 15 anni, il Ristorante Belvedere è l\'emblema dell\'ospitalità italiana a Hofstetten. Ci affidiamo a ricette tradizionali del Sud Italia, ingredienti freschi di stagione e un ambiente accogliente.',
-                '#news-badge':'Attuale', '#news-title':'Attenzione: Pagamenti con carta Postfinance non possibili',
-                '#news-text':'A causa di problemi tecnici, al momento non accettiamo pagamenti con carte Postfinance. Si prega di utilizzare altre carte o contanti.',
-                '#hours-title':'Orari di Apertura', '#h-mon':'Lunedì', '#h-closed-mon':'Chiuso',
-                '#btn-ver-menu':'Scopri il Nostro Menù',
-                // Menu Tabs
-                '#opt-antipasti':'Antipasti', '#opt-paste':'Pasta', '#opt-pizze':'Pizze', '#opt-carne':'Pesce & Carne', '#opt-vini':'Vini',
-                '#title-cucina':'Antipasti, Zuppe & Insalate', '#title-paste':'La Pasta', '#title-pizze':'Le Pizze', '#title-carne':'Pesce e Carne', '#title-vini':'Vini', '#desc-vini':'Carta dei vini in aggiornamento.',
-                // Menu 1
-                '#title-cucina-sub1': 'Antipasti / Antipasti', '#title-cucina-sub2': 'Zuppe / Minestre', '#title-cucina-sub3': 'Insalate / Salate',
-                '#name-1-1': 'Antipasti misti (Piatto)', '#desc-1-1': 'Varietà di antipasti italiani',
-                '#name-1-2': 'Bruschette', '#desc-1-2': 'Fette di pane tostato con pomodori marinati',
-                '#name-1-3': 'Melanzana Gratinata', '#desc-1-3': 'Melanzane gratinate',
-                '#name-1-4': 'Carpaccio di Manzo', '#desc-1-4': 'Carpaccio di Manzo',
-                '#name-1-5': 'Crema di Pomodoro', '#desc-1-5': 'Zuppa crema di pomodoro',
-                '#name-1-6': 'Crema di Zucca', '#desc-1-6': 'Zuppa crema di zucca',
-                '#name-1-7': 'Insalata verde', '#desc-1-7': 'Insalata verde',
-                '#name-1-8': 'Insalata mista', '#desc-1-8': 'Insalata mista',
-                '#name-1-9': 'Insalata Caprese', '#desc-1-9': 'Pomodori con mozzarella',
-                '#name-1-10': 'Insalata Valeriana con Uovo', '#desc-1-10': 'Valerianella con uovo',
-                '#name-1-11': 'Insalata Valeriana con Uovo e Speck', '#desc-1-11': 'Valerianella con uovo e speck',
-                '#name-1-12': 'Wurstkäsesalat Semplice', '#desc-1-12': '',
-                '#name-1-13': 'Wurstkäsesalat Guarnito', '#desc-1-13': '',
-                '#name-1-14': 'Wurstkäsesalat con Patatine Fritte', '#desc-1-14': '',
-                // Menu 2
-                '#name-2-1': 'Spaghetti al Pomodoro', '#desc-2-1': 'Con salsa di pomodoro',
-                '#name-2-2': 'Spaghetti del Marinaio', '#desc-2-2': 'Con olio d\'oliva, acciughe, aglio, pomodori e peperoncino',
-                '#name-2-3': 'Fagottini di Tartufo con salsa al Tartufo', '#desc-2-3': 'Pasta ripiena al tartufo con salsa al tartufo',
-                '#name-2-4': 'Orecchiette con Cime di rape e Salsiccia Piccante', '#desc-2-4': 'Pasta con cime di rapa e salsiccia di maiale piccante',
-                '#name-2-5': 'Risotto ai Porcini', '#desc-2-5': 'Risotto ai funghi porcini',
-                '#name-2-6': 'Panciotti Ripieni di Capesante e Gambero Rosso con salsa allo Zafferano', '#desc-2-6': 'Ravioli ripieni di capesante e gambero rosso in salsa allo zafferano',
-                '#name-2-7': 'Trofie al Profumo di mare', '#desc-2-7': 'Pasta fatta in casa con gamberetti, spinaci e salsa di pomodoro',
-                '#name-2-8': 'Rosette della Casa', '#desc-2-8': 'Pasta fatta in casa con mortadella e spinaci, gratinata con panna e parmigiano',
-                // Menu 3
-                '#name-3-1': 'Pizza Margherita', '#desc-3-1': 'Salsa di pomodoro, mozzarella',
-                '#name-3-2': 'Pizza Prosciutto', '#desc-3-2': 'Salsa di pomodoro, mozzarella, prosciutto',
-                '#name-3-3': 'Pizza ai Funghi', '#desc-3-3': 'Salsa di pomodoro, mozzarella, funghi',
-                '#name-3-4': 'Pizza Prosciutto e funghi', '#desc-3-4': 'Salsa di pomodoro, mozzarella, prosciutto e funghi',
-                '#name-3-5': 'Pizza Napoli', '#desc-3-5': 'Salsa di pomodoro, mozzarella, acciughe, capperi',
-                '#name-3-6': 'Pizza Capricciosa', '#desc-3-6': 'Salsa di pomodoro, mozzarella, prosciutto, funghi, parmigiano',
-                '#name-3-7': 'Pizza Fiorentina', '#desc-3-7': 'Salsa di pomodoro, mozzarella, spinaci',
-                '#name-3-8': 'Pizza Salame', '#desc-3-8': 'Salsa di pomodoro, mozzarella, salame',
-                '#name-3-9': 'Pizza Calabrese', '#desc-3-9': 'Salsa di pomodoro, mozzarella, \'Nduja, melanzane, salame piccante',
-                '#name-3-10': 'Pizza Calzone', '#desc-3-10': 'Salsa di pomodoro, mozzarella, prosciutto, spinaci e uovo',
-                '#name-3-11': 'Pizza quattro Stagioni', '#desc-3-11': 'Salsa di pomodoro, mozzarella, prosciutto, funghi, melanzane, carciofi',
-                '#name-3-12': 'Pizza Gorgonzola', '#desc-3-12': 'Salsa di pomodoro, mozzarella, gorgonzola',
-                '#name-3-13': 'Pizza Hawaii', '#desc-3-13': 'Salsa di pomodoro, mozzarella, prosciutto, ananas',
-                '#name-3-14': 'Pizza Belvedere', '#desc-3-14': 'Salsa di pomodoro, mozzarella, rucola, parmigiano',
-                '#name-3-15': 'Pizza Crudo', '#desc-3-15': 'Salsa di pomodoro, mozzarella, prosciutto crudo',
-                '#name-3-16': 'Pizza della Casa', '#desc-3-16': 'Salsa di pomodoro, mozzarella, prosciutto crudo, rucola, parmigiano',
-                '#name-3-17': 'Pizza al Tonno', '#desc-3-17': 'Salsa di pomodoro, mozzarella, tonno',
-                '#name-3-18': 'Pizza Sennmatt', '#desc-3-18': 'Salsa di pomodoro, mozzarella, prosciutto, speck, cipolle, aglio, peperoncino',
-                '#name-3-19': 'Pizza Bambini / Pizza per Bambini (Fino a 8 anni)', '#desc-3-19': 'Margherita, Prosciutto, Salame, Hawaii',
-                // Menu 4
-                '#title-carne-sub1': 'Pesce / Pesce', '#title-carne-sub2': 'Carne / Carne',
-                '#name-4-1': 'Gamberetti al Prosecco', '#desc-4-1': 'Gamberetti in salsa Prosecco',
-                '#name-4-2': 'Calamari Fritti', '#desc-4-2': 'Anelli di calamari fritti',
-                '#name-4-3': 'Scaloppine di Maiale Impanate', '#desc-4-3': 'Cotolette di maiale impanate',
-                '#name-4-4': 'Cordon Bleu di Maiale', '#desc-4-4': 'Cordon bleu di maiale',
-                '#name-4-5': 'Scaloppine di Maiale con salsa alla Panna', '#desc-4-5': 'Cotolette di maiale con salsa alla panna',
-                '#name-4-6': 'Fegato di Vitello alla Veneziana', '#desc-4-6': 'Fegato di vitello con salsa di cipolle',
-                '#name-4-7': 'Bistecca di Vitello con salsa alle Spugnole', '#desc-4-7': 'Bistecca di vitello con salsa ai funghi spugnole',
-                '#name-4-8': 'Filetto di Manzo alla Griglia', '#desc-4-8': 'Filetto di manzo alla griglia',
-                '#name-4-9': 'Ossobuco di Vitello', '#desc-4-9': 'Ossobuco di vitello',
-                '#carne-note': 'Contorni: Patatine fritte, Rösti, Spätzle fatti in casa, Pasta, Risotto',
-                // Common
-                '#card-events-title':'Eventi & Gruppi', '#card-events-text':'Stai pianificando una festa? Offriamo la cornice perfetta per gruppi.', '#card-events-cta':'Invia Richiesta',
-                '#card-take-title':'Take-away', '#card-take-text':'Tutti i piatti disponibili anche per l\'asporto.', '#card-take-cta':'Ordine WhatsApp', '#card-take-note': 'Chiamata o WhatsApp possibile.',
-                '#gallery-title':'Galleria', '#tour-title':'Tour 360°', '#reserve-title':'Prenotazioni', '#contact-title':'Contatti & Indicazioni',
-                '#lab-date': 'Data', '#lab-time': 'Ora', '#lab-name': 'Nome', '#lab-email': 'E-mail', '#lab-phone': 'Telefono', '#lab-people': 'Persone', '#lab-notes': 'Note', '#btn-submit-res': 'Invia Prenotazione',
-                '#pano-note': '*Nota: Il tour virtuale potrebbe richiedere tempo per caricarsi. Usa le frecce nell\'immagine per cambiare posizione.',
-                '#h-difr': 'Mar - Ven', '#h-sat': 'Sabato', '#h-sun': 'Domenica',
-                '#tour-inside1': 'Interno 1', '#tour-inside2': 'Interno 2', '#tour-inside3': 'Interno 3', '#tour-parking': 'Parcheggio', '#tour-gmaps': 'Apri su Google Maps',
-                '#video-title': 'Il Nostro Video',
-                '#h-closed-mon': 'Chiuso',
-                '#opt-large-group': '9+ (Gruppo / Evento)',
-                '#tel-info': 'Tel: <a href="tel:+41617314287" style="color:var(--accent); font-weight:700">061 731 42 87</a>',
-                '#email-info': 'Email: ristorante-belvedere@bluewin.ch', '#btn-route-plan': 'Calcola Percorso'
-            },
-            fr: {
-                '#nav-about':'À Propos', '#nav-menu':'Carte', '#nav-gallery':'Galerie', '#nav-tour':'Visite 360°', '#nav-reserve':'Réservations', '#nav-contact':'Contact',
-                '#hero-sub':'Le restaurant italien à Hofstetten', '#ver-mas-text':'À Propos', '#bio-title':'Notre Philosophie',
-                '#bio-text':'Depuis plus de 15 ans, le Ristorante Belvedere est l\'incarnation de l\'hospitalité italienne à Hofstetten. Nous misons sur des recettes traditionnelles du sud de l\'Italie, des ingrédients frais de saison et une ambiance chaleureuse.',
-                '#news-badge':'Actuel', '#news-title':'Attention : Paiements par carte Postfinance non acceptés',
-                '#news-text':'En raison de problèmes techniques, nous n\'acceptons actuellement pas les paiements par carte Postfinance. Veuillez utiliser d\'autres cartes ou des espèces.',
-                '#hours-title':'Heures d\'Ouverture', '#h-mon':'Lundi', '#h-closed-mon':'Fermé',
-                '#btn-ver-menu':'Découvrir Notre Carte',
-                // Menu Tabs
-                '#opt-antipasti':'Antipasti', '#opt-paste':'Pâtes', '#opt-pizze':'Pizzas', '#opt-carne':'Poissons & Viandes', '#opt-vini':'Vins',
-                '#title-cucina':'Antipasti, Soupes & Salades', '#title-paste':'Les Pâtes', '#title-pizze':'Les Pizzas', '#title-carne':'Poissons et Viandes', '#title-vini':'Vins', '#desc-vini':'Carte des vins en cours de mise à jour.',
-                // Menu 1
-                '#title-cucina-sub1': 'Hors-d\'œuvre / Entrées', '#title-cucina-sub2': 'Soupes / Potages', '#title-cucina-sub3': 'Salades / Salades',
-                '#name-1-1': 'Antipasti misti (Plat)', '#desc-1-1': 'Diverses entrées italiennes',
-                '#name-1-2': 'Bruschette', '#desc-1-2': 'Tranches de pain grillé aux tomates marinées',
-                '#name-1-3': 'Melanzana Gratinata', '#desc-1-3': 'Aubergines gratinées',
-                '#name-1-4': 'Carpaccio de Bœuf', '#desc-1-4': 'Carpaccio de bœuf',
-                '#name-1-5': 'Crème de Tomate', '#desc-1-5': 'Soupe à la crème de tomate',
-                '#name-1-6': 'Crème de Citrouille', '#desc-1-6': 'Soupe à la crème de citrouille',
-                '#name-1-7': 'Salade verte', '#desc-1-7': 'Salade verte',
-                '#name-1-8': 'Salade mixte', '#desc-1-8': 'Salade mixte',
-                '#name-1-9': 'Salade Caprese', '#desc-1-9': 'Tomates à la mozzarella',
-                '#name-1-10': 'Salade de Mâche aux Œufs', '#desc-1-10': 'Mâche aux œufs',
-                '#name-1-11': 'Salade de Mâche aux Œufs et Lard', '#desc-1-11': 'Mâche aux œufs et lard',
-                '#name-1-12': 'Salade de Saucisse et Fromage Simple', '#desc-1-12': '',
-                '#name-1-13': 'Salade de Saucisse et Fromage Garnie', '#desc-1-13': '',
-                '#name-1-14': 'Salade de Saucisse et Fromage avec Frites', '#desc-1-14': '',
-                // Menu 2
-                '#name-2-1': 'Spaghetti à la Tomate', '#desc-2-1': 'Sauce tomate',
-                '#name-2-2': 'Spaghetti du Marin', '#desc-2-2': 'Huile d\'olive, anchois, ail, tomates et piment',
-                '#name-2-3': 'Fagottini de Truffe Sauce Truffe', '#desc-2-3': 'Pâtes farcies à la truffe avec sauce à la truffe',
-                '#name-2-4': 'Orecchiette aux Feuilles de Navet et Saucisse Épicée', '#desc-2-4': 'Pâtes aux feuilles de navet et saucisse de porc piquante',
-                '#name-2-5': 'Risotto aux Cèpes', '#desc-2-5': 'Risotto aux cèpes',
-                '#name-2-6': 'Panciotti Farcis aux Noix de Saint-Jacques et Crevettes Rouges Sauce Safran', '#desc-2-6': 'Raviolis farcis aux pétoncles et crevettes rouges en sauce au safran',
-                '#name-2-7': 'Trofie aux Saveurs de la Mer', '#desc-2-7': 'Pâtes maison aux crevettes, épinards et sauce tomate',
-                '#name-2-8': 'Rosette de la Maison', '#desc-2-8': 'Pâtes maison à la mortadelle et aux épinards, gratinées à la crème et au parmesan',
-                // Menu 3
-                '#name-3-1': 'Pizza Margherita', '#desc-3-1': 'Sauce tomate, mozzarella',
-                '#name-3-2': 'Pizza Jambon', '#desc-3-2': 'Sauce tomate, mozzarella, jambon',
-                '#name-3-3': 'Pizza aux Champignons', '#desc-3-3': 'Sauce tomate, mozzarella, champignons',
-                '#name-3-4': 'Pizza Jambon et Champignons', '#desc-3-4': 'Sauce tomate, mozzarella, jambon et champignons',
-                '#name-3-5': 'Pizza Napoli', '#desc-3-5': 'Sauce tomate, mozzarella, anchois, câpres',
-                '#name-3-6': 'Pizza Capricieuse', '#desc-3-6': 'Sauce tomate, mozzarella, jambon, champignons, parmesan',
-                '#name-3-7': 'Pizza Florentine', '#desc-3-7': 'Sauce tomate, mozzarella, épinards',
-                '#name-3-8': 'Pizza Salami', '#desc-3-8': 'Sauce tomate, mozzarella, salami',
-                '#name-3-9': 'Pizza Calabrese', '#desc-3-9': 'Sauce tomate, mozzarella, \'Nduja, aubergines, salami piquant',
-                '#name-3-10': 'Pizza Calzone', '#desc-3-10': 'Sauce tomate, mozzarella, jambon, épinards et œuf',
-                '#name-3-11': 'Pizza quatre Saisons', '#desc-3-11': 'Sauce tomate, mozzarella, jambon, champignons, aubergines, artichauts',
-                '#name-3-12': 'Pizza Gorgonzola', '#desc-3-12': 'Sauce tomate, mozzarella, gorgonzola',
-                '#name-3-13': 'Pizza Hawaï', '#desc-3-13': 'Sauce tomate, mozzarella, jambon, ananas',
-                '#name-3-14': 'Pizza Belvedere', '#desc-3-14': 'Sauce tomate, mozzarella, roquette, parmesan',
-                '#name-3-15': 'Pizza au Jambon Cru', '#desc-3-15': 'Sauce tomate, mozzarella, jambon cru',
-                '#name-3-16': 'Pizza de la Maison', '#desc-3-16': 'Sauce tomate, mozzarella, jambon cru, roquette, parmesan',
-                '#name-3-17': 'Pizza au Thon', '#desc-3-17': 'Sauce tomate, mozzarella, thon',
-                '#name-3-18': 'Pizza Sennmatt', '#desc-3-18': 'Sauce tomate, mozzarella, jambon, lard, oignons, ail, piment',
-                '#name-3-19': 'Pizza pour Enfants (Jusqu\'à 8 ans)', '#desc-3-19': 'Margherita, Jambon, Salami, Hawaï',
-                // Menu 4
-                '#title-carne-sub1': 'Poissons / Poissons', '#title-carne-sub2': 'Viandes / Viandes',
-                '#name-4-1': 'Crevettes au Prosecco', '#desc-4-1': 'Crevettes en sauce Prosecco',
-                '#name-4-2': 'Calamars Frits', '#desc-4-2': 'Anneaux de calamars frits',
-                '#name-4-3': 'Escalopes de Porc Panées', '#desc-4-3': 'Escalopes de porc panées',
-                '#name-4-4': 'Cordon Bleu de Porc', '#desc-4-4': 'Cordon bleu de porc',
-                '#name-4-5': 'Escalopes de Porc Sauce Crème', '#desc-4-5': 'Escalopes de porc sauce crème',
-                '#name-4-6': 'Foie de Veau à la Vénitienne', '#desc-4-6': 'Foie de veau sauce aux oignons',
-                '#name-4-7': 'Steak de Veau Sauce Morilles', '#desc-4-7': 'Steak de veau sauce morilles',
-                '#name-4-8': 'Filet de Bœuf Grillé', '#desc-4-8': 'Filet de bœuf grillé',
-                '#name-4-9': 'Ossobuco de Veau', '#desc-4-9': 'Ossobuco de veau',
-                '#carne-note': 'Accompagnements : Frites, Rösti, Spätzle maison, Pâtes, Risotto',
-                // Common
-                '#card-events-title':'Événements & Groupes', '#card-events-text':'Planifiez une fête? Nous offrons le cadre parfait pour les groupes.', '#card-events-cta':'Envoyer une Demande',
-                '#card-take-title':'À Emporter', '#card-take-text':'Tous les plats sont également disponibles à emporter.', '#card-take-cta':'Commande WhatsApp', '#card-take-note': 'Appel ou WhatsApp possible.',
-                '#gallery-title':'Galerie', '#tour-title':'Visite 360°', '#reserve-title':'Réservations', '#contact-title':'Contact & Accès',
-                '#lab-date': 'Date', '#lab-time': 'Heure', '#lab-name': 'Nom', '#lab-email': 'E-mail', '#lab-phone': 'Téléphone', '#lab-people': 'Personnes', '#lab-notes': 'Notes', '#btn-submit-res': 'Soumettre la Réservation',
-                '#pano-note': '*Note : La visite virtuelle peut nécessiter un temps de chargement. Utilisez les flèches dans l\'image pour changer de lieu.',
-                '#h-difr': 'Mar - Ven', '#h-sat': 'Samedi', '#h-sun': 'Dimanche',
-                '#tour-inside1': 'Intérieur 1', '#tour-inside2': 'Intérieur 2', '#tour-inside3': 'Intérieur 3', '#tour-parking': 'Parking', '#tour-gmaps': 'Ouvrir dans Google Maps',
-                '#video-title': 'Notre Vidéo',
-                '#h-closed-mon': 'Fermé',
-                '#opt-large-group': '9+ (Groupe / Événement)',
-                '#tel-info': 'Tél: <a href="tel:+41617314287" style="color:var(--accent); font-weight:700">061 731 42 87</a>',
-                '#email-info': 'Email: ristorante-belvedere@bluewin.ch', '#btn-route-plan': 'Planifier l\'Itinéraire'
-            },
-            en: {
-                '#nav-about':'About Us', '#nav-menu':'Menu', '#nav-gallery':'Gallery', '#nav-tour':'360° Tour', '#nav-reserve':'Reservations', '#nav-contact':'Contact',
-                '#hero-sub':'The Italian Restaurant in Hofstetten', '#ver-mas-text':'About Us', '#bio-title':'Our Philosophy',
-                '#bio-text':'For over 15 years, Ristorante Belvedere has been the epitome of Italian hospitality in Hofstetten. We focus on traditional recipes from Southern Italy, fresh seasonal ingredients, and a cozy atmosphere.',
-                '#news-badge':'Current', '#news-title':'Attention: Postfinance Card Payments Not Possible',
-                '#news-text':'Due to technical issues, we are currently not accepting payments with Postfinance cards. Please use other cards or cash.',
-                '#hours-title':'Opening Hours', '#h-mon':'Monday', '#h-closed-mon':'Closed',
-                '#btn-ver-menu':'Discover Our Menu',
-                // Menu Tabs
-                '#opt-antipasti':'Antipasti', '#opt-paste':'Pasta', '#opt-pizze':'Pizzas', '#opt-carne':'Fish & Meat', '#opt-vini':'Wine',
-                '#title-cucina':'Antipasti, Soups & Salads', '#title-paste':'Pasta', '#title-pizze':'Pizzas', '#title-carne':'Fish and Meat', '#title-vini':'Wine', '#desc-vini':'Wine list being updated.',
-                // Menu 1
-                '#title-cucina-sub1': 'Antipasti / Appetizers', '#title-cucina-sub2': 'Zuppe / Soups', '#title-cucina-sub3': 'Insalate / Salads',
-                '#name-1-1': 'Mixed Antipasti (Plate)', '#desc-1-1': 'Various Italian appetizers',
-                '#name-1-2': 'Bruschette', '#desc-1-2': 'Toasted bread slices with marinated tomatoes',
-                '#name-1-3': 'Gratinated Melanzana', '#desc-1-3': 'Gratinated eggplant',
-                '#name-1-4': 'Beef Carpaccio', '#desc-1-4': 'Beef Carpaccio',
-                '#name-1-5': 'Cream of Tomato', '#desc-1-5': 'Cream of tomato soup',
-                '#name-1-6': 'Cream of Pumpkin', '#desc-1-6': 'Cream of pumpkin soup',
-                '#name-1-7': 'Green Salad', '#desc-1-7': 'Green salad',
-                '#name-1-8': 'Mixed Salad', '#desc-1-8': 'Mixed salad',
-                '#name-1-9': 'Caprese Salad', '#desc-1-9': 'Tomatoes with mozzarella',
-                '#name-1-10': 'Lamb\'s Lettuce with Egg', '#desc-1-10': 'Lamb\'s lettuce with egg',
-                '#name-1-11': 'Lamb\'s Lettuce with Egg and Bacon', '#desc-1-11': 'Lamb\'s lettuce with egg and bacon',
-                '#name-1-12': 'Simple Sausage and Cheese Salad', '#desc-1-12': '',
-                '#name-1-13': 'Garnished Sausage and Cheese Salad', '#desc-1-13': '',
-                '#name-1-14': 'Sausage and Cheese Salad with Fries', '#desc-1-14': '',
-                // Menu 2
-                '#name-2-1': 'Spaghetti with Tomato', '#desc-2-1': 'With tomato sauce',
-                '#name-2-2': 'Spaghetti del Marinaio', '#desc-2-2': 'With olive oil, anchovies, garlic, tomatoes and chili',
-                '#name-2-3': 'Truffle Fagottini with Truffle Sauce', '#desc-2-3': 'Truffle-filled pasta pockets with truffle sauce',
-                '#name-2-4': 'Orecchiette with Turnip Tops and Spicy Sausage', '#desc-2-4': 'Pasta with turnip tops and spicy pork sausage',
-                '#name-2-5': 'Porcini Mushroom Risotto', '#desc-2-5': 'Risotto with porcini mushrooms',
-                '#name-2-6': 'Panciotti Stuffed with Scallops and Red Prawn with Saffron Sauce', '#desc-2-6': 'Ravioli stuffed with scallops and red prawn filling in saffron sauce',
-                '#name-2-7': 'Trofie with Seafood Flavor', '#desc-2-7': 'Homemade pasta with shrimp, spinach, and tomato sauce',
-                '#name-2-8': 'Rosette of the House', '#desc-2-8': 'Homemade pasta with mortadella and spinach, baked with cream and parmesan',
-                // Menu 3
-                '#name-3-1': 'Pizza Margherita', '#desc-3-1': 'Tomato sauce, mozzarella',
-                '#name-3-2': 'Ham Pizza', '#desc-3-2': 'Tomato sauce, mozzarella, ham',
-                '#name-3-3': 'Mushroom Pizza', '#desc-3-3': 'Tomato sauce, mozzarella, mushrooms',
-                '#name-3-4': 'Ham and Mushroom Pizza', '#desc-3-4': 'Tomato sauce, mozzarella, ham and mushrooms',
-                '#name-3-5': 'Naples Pizza', '#desc-3-5': 'Tomato sauce, mozzarella, anchovies, capers',
-                '#name-3-6': 'Capricciosa Pizza', '#desc-3-6': 'Tomato sauce, mozzarella, ham, mushrooms, parmesan',
-                '#name-3-7': 'Florentina Pizza', '#desc-3-7': 'Tomato sauce, mozzarella, spinach',
-                '#name-3-8': 'Salami Pizza', '#desc-3-8': 'Tomato sauce, mozzarella, salami',
-                '#name-3-9': 'Calabrese Pizza', '#desc-3-9': 'Tomato sauce, mozzarella, \'Nduja, eggplant, spicy salami',
-                '#name-3-10': 'Calzone Pizza', '#desc-3-10': 'Tomato sauce, mozzarella, ham, spinach, and egg',
-                '#name-3-11': 'Four Seasons Pizza', '#desc-3-11': 'Tomato sauce, mozzarella, ham, mushrooms, eggplant, artichokes',
-                '#name-3-12': 'Gorgonzola Pizza', '#desc-3-12': 'Tomato sauce, mozzarella, gorgonzola',
-                '#name-3-13': 'Hawaiian Pizza', '#desc-3-13': 'Tomato sauce, mozzarella, ham, pineapple',
-                '#name-3-14': 'Belvedere Pizza', '#desc-3-14': 'Tomato sauce, mozzarella, arugula, parmesan',
-                '#name-3-15': 'Prosciutto Pizza', '#desc-3-15': 'Tomato sauce, mozzarella, prosciutto',
-                '#name-3-16': 'Pizza of the House', '#desc-3-16': 'Tomato sauce, mozzarella, prosciutto, arugula, parmesan',
-                '#name-3-17': 'Tuna Pizza', '#desc-3-17': 'Tomato sauce, mozzarella, tuna',
-                '#name-3-18': 'Sennmatt Pizza', '#desc-3-18': 'Tomato sauce, mozzarella, ham, bacon, onions, garlic, chili',
-                '#name-3-19': 'Kids Pizza (Up to 8 years)', '#desc-3-19': 'Margherita, Ham, Salami, Hawaiian',
-                // Menu 4
-                '#title-carne-sub1': 'Fish / Fish', '#title-carne-sub2': 'Meat / Meat',
-                '#name-4-1': 'Prawns with Prosecco', '#desc-4-1': 'Prawns in Prosecco sauce',
-                '#name-4-2': 'Fried Calamari', '#desc-4-2': 'Fried calamari rings',
-                '#name-4-3': 'Breaded Pork Cutlets', '#desc-4-3': 'Breaded pork cutlets',
-                '#name-4-4': 'Pork Cordon Bleu', '#desc-4-4': 'Pork Cordon bleu',
-                '#name-4-5': 'Pork Cutlets with Cream Sauce', '#desc-4-5': 'Pork cutlets with cream sauce',
-                '#name-4-6': 'Veal Liver Venetian Style', '#desc-4-6': 'Veal liver with onion sauce',
-                '#name-4-7': 'Veal Steak with Morel Sauce', '#desc-4-7': 'Veal steak with morel sauce',
-                '#name-4-8': 'Grilled Beef Fillet', '#desc-4-8': 'Grilled beef fillet',
-                '#name-4-9': 'Veal Ossobuco', '#desc-4-9': 'Veal Ossobuco',
-                '#carne-note': 'Side dishes: French fries, Rösti, Homemade Spätzle, Noodles, Risotto',
-                // Common
-                '#card-events-title':'Events & Groups', '#card-events-text':'Planning a celebration? We offer the perfect setting for groups.', '#card-events-cta':'Send Inquiry',
-                '#card-take-title':'Take-away', '#card-take-text':'All dishes also available for take-away.', '#card-take-cta':'WhatsApp Order', '#card-take-note': 'Call or WhatsApp possible.',
-                '#gallery-title':'Gallery', '#tour-title':'360° Tour', '#reserve-title':'Reservations', '#contact-title':'Contact & Directions',
-                '#lab-date': 'Date', '#lab-time': 'Time', '#lab-name': 'Name', '#lab-email': 'E-mail', '#lab-phone': 'Phone', '#lab-people': 'People', '#lab-notes': 'Notes', '#btn-submit-res': 'Submit Reservation',
-                '#pano-note': '*Note: The virtual tour may take time to load. Use the arrows in the image to change location.',
-                '#h-difr': 'Tue - Fri', '#h-sat': 'Saturday', '#h-sun': 'Sunday',
-                '#tour-inside1': 'Interior 1', '#tour-inside2': 'Interior 2', '#tour-inside3': 'Interior 3', '#tour-parking': 'Parking Lot', '#tour-gmaps': 'Open in Google Maps',
-                '#video-title': 'Our Restaurant Video',
-                '#h-closed-mon': 'Closed',
-                '#opt-large-group': '9+ (Group / Event)',
-                '#tel-info': 'Tel: <a href="tel:+41617314287" style="color:var(--accent); font-weight:700">061 731 42 87</a>',
-                '#email-info': 'Email: ristorante-belvedere@bluewin.ch', '#btn-route-plan': 'Plan Route'
-            }
-        };
-
-        const langSwitch = document.getElementById('langSwitch');
-        const miniBio = document.getElementById('mini-bio');
-        const verMasText = document.getElementById('ver-mas-text');
-
-        function applyTranslation(lang) {
-            if (!translations[lang]) return;
-            const currentTranslations = translations[lang];
-
-            // 1. Traducir elementos con IDs (Incluye ahora todos los elementos del menú)
-            for (const selector in currentTranslations) {
-                const element = document.querySelector(selector);
-                if (element) {
-                    if (selector === '#tel-info' || selector === '#email-info') {
-                        // Para elementos que necesitan HTML (e.g. el enlace telefónico)
-                        element.innerHTML = currentTranslations[selector];
-                    }
-                    else if (element.tagName === 'INPUT' || element.tagName === 'BUTTON') {
-                        // Para botones e inputs
-                        element.textContent = currentTranslations[selector];
-                    }
-                    else {
-                        // Para todos los demás elementos (texto simple)
-                        element.textContent = currentTranslations[selector];
-                    }
-                }
-            }
-
-            // 2. Ajustar el texto del botón "ver más"
-            const isVisible = miniBio.classList.contains('visible');
-            let showMoreText = currentTranslations['#ver-mas-text'];
-            let showLessText = translations[lang]['#h-closed-mon'] === 'Geschlossen' ? 'Weniger anzeigen' :
-                lang === 'it' ? 'Meno' :
-                    lang === 'fr' ? 'Moins' : 'Show Less';
-
-            verMasText.textContent = isVisible ? showLessText : showMoreText;
-        }
-        langSwitch.addEventListener('change', (e) => applyTranslation(e.target.value));
-        // Apply default language on load
-        applyTranslation('de');
-
-
-        // ====== 6) TOGGLE BIO ======
-        const btnVerMas = document.getElementById('btn-ver-mas');
-
-        btnVerMas.addEventListener('click', () => {
-            const isVisible = miniBio.classList.toggle('visible');
-            let currentLang = langSwitch.value;
-            let showMoreText = translations[currentLang]['#ver-mas-text'];
-            let showLessText = currentLang === 'de' ? 'Weniger anzeigen' :
-                currentLang === 'it' ? 'Meno' :
-                    currentLang === 'fr' ? 'Moins' : 'Show Less';
-
-            verMasText.textContent = isVisible ? showLessText : showMoreText;
-        });
-
-        // ====== 7) AÑO EN FOOTER ======
-        document.getElementById('year').textContent = new Date().getFullYear();
-
-        // ====== 8) TOGGLE TEMA OSCURO/CLARO ======
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
-
-        function initializeTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            body.setAttribute('data-theme', savedTheme);
-            themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-        }
-
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-            body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-        });
-
-        initializeTheme();
+  menuFilters.forEach(button => {
+    button.addEventListener('click', (e) => {
+      const target = e.target.getAttribute('data-target');
+      filterMenu(target);
     });
-</script>
-</body>
-</html>
+  });
 
-  <script>
-    // TU JS (lo que ya tenías)
-  </script>
+  // ====== 3) CARRUSEL GALERÍA ======
+  let currentGalleryIndex = 0;
+
+  const centerImg = document.getElementById('gal-center');
+  const leftImg = document.getElementById('gal-left');
+  const rightImg = document.getElementById('gal-right');
+  const dotContainer = document.querySelector('.car-dots');
+  const prevButton = document.getElementById('prevGal');
+  const nextButton = document.getElementById('nextGal');
+
+  function updateGallery(newIndex) {
+    if (galleryImages.length === 0 || !centerImg || !leftImg || !rightImg) return;
+
+    const total = galleryImages.length;
+    currentGalleryIndex = (newIndex + total) % total;
+
+    const leftIndex = (currentGalleryIndex - 1 + total) % total;
+    const rightIndex = (currentGalleryIndex + 1) % total;
+
+    centerImg.src = galleryImages[currentGalleryIndex];
+    leftImg.src = galleryImages[leftIndex];
+    rightImg.src = galleryImages[rightIndex];
+
+    document.querySelectorAll('.car-dot').forEach((dot, index) => {
+      dot.setAttribute('aria-selected', index === currentGalleryIndex);
+    });
+  }
+
+  function moveGallery(direction) {
+    updateGallery(currentGalleryIndex + direction);
+  }
+
+  function initializeGallery() {
+    if (galleryImages.length === 0 || !dotContainer) return;
+    dotContainer.innerHTML = '';
+    galleryImages.forEach((_, index) => {
+      const dot = document.createElement('span');
+      dot.className = 'car-dot';
+      dot.setAttribute('role', 'button');
+      dot.addEventListener('click', () => updateGallery(index));
+      dotContainer.appendChild(dot);
+    });
+    updateGallery(0);
+  }
+
+  if (prevButton && nextButton) {
+    prevButton.addEventListener('click', () => moveGallery(-1));
+    nextButton.addEventListener('click', () => moveGallery(1));
+  }
+  initializeGallery();
+
+  // ====== 4) TOUR 360 (incluye PARKING con tu iframe) ======
+  const tourLinks = {
+    inside1: "https://www.google.com/maps/embed?pb=!4v1765555577996!6m8!1m7!1sCAoSFkNJSE0wb2dLRUlDQWdJREdvLWlRZUE.!2m2!1d47.47681845369535!2d7.513003221831509!3f257.250822250953!4f-16.57012713056281!5f0.4000000000000002",
+    inside2: "https://www.google.com/maps/embed?pb=!4v1765555610220!6m8!1m7!1sCAoSFkNJSE0wb2dLRUlDQWdJREdvLWlvUGc.!2m2!1d47.47681838335772!2d7.512932120561533!3f280!4f10!5f0.7820865974627469",
+    inside3: "https://www.google.com/maps/embed?pb=!4v1765555610220!6m8!1m7!1sCAoSFkNJSE0wb2dLRUlDQWdJREdvLWlvUGc.!2m2!1d47.47681838335772!2d7.512932120561533!3f280!4f10!5f0.7820865974627469",
+    parking: "https://www.google.com/maps/embed?pb=!4v1765719596762!6m8!1m7!1sdhgjW4wTaTTddlSfO_mOKw!2m2!1d47.47670587846076!2d7.512803695443861!3f49.18887000000001!4f0!5f0.7820865974627469"
+  };
+
+  const tourFrame = document.getElementById('tourFrame');
+  const tourBtns = document.querySelectorAll('.tour-btn');
+
+  function setTour(key) {
+    if (!tourFrame || !tourLinks[key]) return;
+    tourFrame.src = tourLinks[key];
+  }
+
+  tourBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tourBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      setTour(btn.dataset.tour);
+    });
+  });
+
+  // Inicial
+  setTour('inside1');
+
+  // ====== 5) TRADUCCIONES (BIO actualizada en 4 idiomas) ======
+  const translations = {
+    de: {
+      '#nav-about':'Über uns', '#nav-menu':'Speisekarte', '#nav-gallery':'Galerie', '#nav-tour':'360°-Tour', '#nav-reserve':'Reservationen', '#nav-contact':'Kontakt',
+      '#hero-sub':'Das italienische Restaurant in Hofstetten', '#ver-mas-text':'Über uns', '#bio-title':'Unsere Philosophie',
+      '#bio-text':'Willkommen im Ristorante Belvedere in Hofstetten. Bei uns treffen italienische Klassiker auf frische, saisonale Zutaten und herzliche Gastfreundschaft. Ob gemütliches Abendessen, Take-away oder Anlass mit Gruppe – wir freuen uns auf Ihren Besuch.',
+      '#news-badge':'Aktuell', '#news-title':'Achtung: Postfinance Kartenzahlungen nicht möglich',
+      '#news-text':'Aufgrund technischer Probleme akzeptieren wir derzeit keine Zahlungen mit Postfinance-Karten. Bitte nutzen Sie andere Karten oder Barzahlung.',
+      '#hours-title':'Öffnungszeiten', '#h-mon':'Montag', '#h-closed-mon':'Geschlossen',
+      '#btn-ver-menu':'Unsere Speisekarte entdecken',
+      '#card-events-title':'Veranstaltungen & Gruppen', '#card-events-text':'Planen Sie ein Fest? Wir bieten den perfekten Rahmen für Gruppen.', '#card-events-cta':'Anfrage senden',
+      '#card-take-title':'Take-away', '#card-take-text':'Alle Gerichte auch zum Mitnehmen bestellen.', '#card-take-cta':'WhatsApp Bestellung', '#card-take-note':'Anruf oder WhatsApp möglich.',
+      '#gallery-title':'Galerie', '#tour-title':'360°-Tour', '#reserve-title':'Reservationen', '#contact-title':'Kontakt & Anfahrt',
+      '#lab-date':'Datum', '#lab-time':'Uhrzeit', '#lab-name':'Name', '#lab-email':'E-mail', '#lab-phone':'Telefon', '#lab-people':'Personen', '#lab-notes':'Notizen', '#btn-submit-res':'Reservation absenden',
+      '#pano-note':'*Hinweis: Der virtuelle Rundgang kann Ladezeiten benötigen. Verwenden Sie die Pfeile im Bild, um den Standort zu wechseln.',
+      '#h-difr':'Di - Fr', '#h-sat':'Samstag', '#h-sun':'Sonntag',
+      '#tour-inside1':'Innen 1', '#tour-inside2':'Innen 2', '#tour-inside3':'Innen 3', '#tour-parking':'Parkplatz', '#tour-gmaps':'In Google Maps öffnen',
+      '#video-title':'Unser Restaurant Video',
+      '#opt-large-group':'9+ (Gruppe / Event)',
+      '#tel-info':'Tel: <a href="tel:+41617314287" style="color:var(--accent); font-weight:700">061 731 42 87</a>',
+      '#email-info':'Email: ristorante-belvedere@bluewin.ch', '#btn-route-plan':'Route planen'
+    },
+    it: {
+      '#nav-about':'Chi Siamo', '#nav-menu':'Menù', '#nav-gallery':'Galleria', '#nav-tour':'Tour 360°', '#nav-reserve':'Prenotazioni', '#nav-contact':'Contatti',
+      '#hero-sub':'Il ristorante italiano a Hofstetten', '#ver-mas-text':'Chi Siamo', '#bio-title':'La Nostra Filosofia',
+      '#bio-text':'Benvenuti al Ristorante Belvedere a Hofstetten. Cucina italiana con ingredienti freschi e stagionali, ricette tradizionali e un’accoglienza calorosa. Che sia una cena, take-away o un evento, vi aspettiamo con piacere.',
+      '#news-badge':'Attuale', '#news-title':'Attenzione: Pagamenti con carta Postfinance non possibili',
+      '#news-text':'A causa di problemi tecnici, al momento non accettiamo pagamenti con carte Postfinance. Si prega di utilizzare altre carte o contanti.',
+      '#hours-title':'Orari di Apertura', '#h-mon':'Lunedì', '#h-closed-mon':'Chiuso',
+      '#btn-ver-menu':'Scopri il Nostro Menù',
+      '#card-events-title':'Eventi & Gruppi', '#card-events-text':'Stai pianificando una festa? Offriamo la cornice perfetta per gruppi.', '#card-events-cta':'Invia Richiesta',
+      '#card-take-title':'Take-away', '#card-take-text':'Tutti i piatti disponibili anche per l’asporto.', '#card-take-cta':'Ordine WhatsApp', '#card-take-note':'Chiamata o WhatsApp possibile.',
+      '#gallery-title':'Galleria', '#tour-title':'Tour 360°', '#reserve-title':'Prenotazioni', '#contact-title':'Contatti & Indicazioni',
+      '#lab-date':'Data', '#lab-time':'Ora', '#lab-name':'Nome', '#lab-email':'E-mail', '#lab-phone':'Telefono', '#lab-people':'Persone', '#lab-notes':'Note', '#btn-submit-res':'Invia Prenotazione',
+      '#pano-note':'*Nota: Il tour virtuale potrebbe richiedere tempo per caricarsi. Usa le frecce nell’immagine per cambiare posizione.',
+      '#h-difr':'Mar - Ven', '#h-sat':'Sabato', '#h-sun':'Domenica',
+      '#tour-inside1':'Interno 1', '#tour-inside2':'Interno 2', '#tour-inside3':'Interno 3', '#tour-parking':'Parcheggio', '#tour-gmaps':'Apri su Google Maps',
+      '#video-title':'Il Nostro Video',
+      '#opt-large-group':'9+ (Gruppo / Evento)',
+      '#tel-info':'Tel: <a href="tel:+41617314287" style="color:var(--accent); font-weight:700">061 731 42 87</a>',
+      '#email-info':'Email: ristorante-belvedere@bluewin.ch', '#btn-route-plan':'Calcola Percorso'
+    },
+    fr: {
+      '#nav-about':'À Propos', '#nav-menu':'Carte', '#nav-gallery':'Galerie', '#nav-tour':'Visite 360°', '#nav-reserve':'Réservations', '#nav-contact':'Contact',
+      '#hero-sub':'Le restaurant italien à Hofstetten', '#ver-mas-text':'À Propos', '#bio-title':'Notre Philosophie',
+      '#bio-text':'Bienvenue au Ristorante Belvedere à Hofstetten. Une cuisine italienne authentique, des produits frais de saison et une hospitalité chaleureuse. Dîner, take-away ou événement de groupe — nous nous réjouissons de vous accueillir.',
+      '#news-badge':'Actuel', '#news-title':'Attention : Paiements par carte Postfinance non acceptés',
+      '#news-text':'En raison de problèmes techniques, nous n’acceptons actuellement pas les paiements par carte Postfinance. Veuillez utiliser d’autres cartes ou des espèces.',
+      '#hours-title':'Heures d’Ouverture', '#h-mon':'Lundi', '#h-closed-mon':'Fermé',
+      '#btn-ver-menu':'Découvrir Notre Carte',
+      '#card-events-title':'Événements & Groupes', '#card-events-text':'Planifiez une fête ? Nous offrons le cadre parfait pour les groupes.', '#card-events-cta':'Envoyer une Demande',
+      '#card-take-title':'À Emporter', '#card-take-text':'Tous les plats sont aussi disponibles à emporter.', '#card-take-cta':'Commande WhatsApp', '#card-take-note':'Appel ou WhatsApp possible.',
+      '#gallery-title':'Galerie', '#tour-title':'Visite 360°', '#reserve-title':'Réservations', '#contact-title':'Contact & Accès',
+      '#lab-date':'Date', '#lab-time':'Heure', '#lab-name':'Nom', '#lab-email':'E-mail', '#lab-phone':'Téléphone', '#lab-people':'Personnes', '#lab-notes':'Notes', '#btn-submit-res':'Soumettre la Réservation',
+      '#pano-note':'*Note : La visite virtuelle peut nécessiter un temps de chargement. Utilisez les flèches dans l’image pour changer de lieu.',
+      '#h-difr':'Mar - Ven', '#h-sat':'Samedi', '#h-sun':'Dimanche',
+      '#tour-inside1':'Intérieur 1', '#tour-inside2':'Intérieur 2', '#tour-inside3':'Intérieur 3', '#tour-parking':'Parking', '#tour-gmaps':'Ouvrir dans Google Maps',
+      '#video-title':'Notre Vidéo',
+      '#opt-large-group':'9+ (Groupe / Événement)',
+      '#tel-info':'Tél: <a href="tel:+41617314287" style="color:var(--accent); font-weight:700">061 731 42 87</a>',
+      '#email-info':'Email: ristorante-belvedere@bluewin.ch', '#btn-route-plan':'Planifier l’Itinéraire'
+    },
+    en: {
+      '#nav-about':'About Us', '#nav-menu':'Menu', '#nav-gallery':'Gallery', '#nav-tour':'360° Tour', '#nav-reserve':'Reservations', '#nav-contact':'Contact',
+      '#hero-sub':'The Italian Restaurant in Hofstetten', '#ver-mas-text':'About Us', '#bio-title':'Our Philosophy',
+      '#bio-text':'Welcome to Ristorante Belvedere in Hofstetten. Authentic Italian classics, fresh seasonal ingredients, and warm hospitality. Whether it’s dinner, take-away, or a group event — we look forward to your visit.',
+      '#news-badge':'Current', '#news-title':'Attention: Postfinance Card Payments Not Possible',
+      '#news-text':'Due to technical issues, we are currently not accepting payments with Postfinance cards. Please use other cards or cash.',
+      '#hours-title':'Opening Hours', '#h-mon':'Monday', '#h-closed-mon':'Closed',
+      '#btn-ver-menu':'Discover Our Menu',
+      '#card-events-title':'Events & Groups', '#card-events-text':'Planning a celebration? We offer the perfect setting for groups.', '#card-events-cta':'Send Inquiry',
+      '#card-take-title':'Take-away', '#card-take-text':'All dishes also available for take-away.', '#card-take-cta':'WhatsApp Order', '#card-take-note':'Call or WhatsApp possible.',
+      '#gallery-title':'Gallery', '#tour-title':'360° Tour', '#reserve-title':'Reservations', '#contact-title':'Contact & Directions',
+      '#lab-date':'Date', '#lab-time':'Time', '#lab-name':'Name', '#lab-email':'E-mail', '#lab-phone':'Phone', '#lab-people':'People', '#lab-notes':'Notes', '#btn-submit-res':'Submit Reservation',
+      '#pano-note':'*Note: The virtual tour may take time to load. Use the arrows in the image to change location.',
+      '#h-difr':'Tue - Fri', '#h-sat':'Saturday', '#h-sun':'Sunday',
+      '#tour-inside1':'Interior 1', '#tour-inside2':'Interior 2', '#tour-inside3':'Interior 3', '#tour-parking':'Parking Lot', '#tour-gmaps':'Open in Google Maps',
+      '#video-title':'Our Restaurant Video',
+      '#opt-large-group':'9+ (Group / Event)',
+      '#tel-info':'Tel: <a href="tel:+41617314287" style="color:var(--accent); font-weight:700">061 731 42 87</a>',
+      '#email-info':'Email: ristorante-belvedere@bluewin.ch', '#btn-route-plan':'Plan Route'
+    }
+  };
+
+  const langSwitch = document.getElementById('langSwitch');
+  const miniBio = document.getElementById('mini-bio');
+  const verMasText = document.getElementById('ver-mas-text');
+
+  function applyTranslation(lang) {
+    if (!translations[lang]) return;
+    const currentTranslations = translations[lang];
+
+    for (const selector in currentTranslations) {
+      const element = document.querySelector(selector);
+      if (!element) continue;
+
+      if (selector === '#tel-info') element.innerHTML = currentTranslations[selector];
+      else element.textContent = currentTranslations[selector];
+    }
+
+    const isVisible = miniBio.classList.contains('visible');
+    const showMoreText = currentTranslations['#ver-mas-text'];
+
+    const showLessText =
+      lang === 'de' ? 'Weniger anzeigen' :
+      lang === 'it' ? 'Meno' :
+      lang === 'fr' ? 'Moins' : 'Show Less';
+
+    verMasText.textContent = isVisible ? showLessText : showMoreText;
+  }
+
+  langSwitch.addEventListener('change', (e) => applyTranslation(e.target.value));
+  applyTranslation('de');
+
+  // ====== 6) TOGGLE BIO ======
+  const btnVerMas = document.getElementById('btn-ver-mas');
+  btnVerMas.addEventListener('click', () => {
+    const isVisible = miniBio.classList.toggle('visible');
+    const currentLang = langSwitch.value;
+
+    const showMoreText = translations[currentLang]['#ver-mas-text'];
+    const showLessText =
+      currentLang === 'de' ? 'Weniger anzeigen' :
+      currentLang === 'it' ? 'Meno' :
+      currentLang === 'fr' ? 'Moins' : 'Show Less';
+
+    verMasText.textContent = isVisible ? showLessText : showMoreText;
+  });
+
+  // ====== 7) AÑO ======
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // ====== 8) TEMA ======
+  const themeToggle = document.getElementById('themeToggle');
+  const body = document.body;
+
+  function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    body.setAttribute('data-theme', savedTheme);
+    themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+  }
+
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+  });
+
+  initializeTheme();
+});
+</script>
 </body>
 </html>
